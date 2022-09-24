@@ -3,12 +3,21 @@ package fr.NVT.TopOneReacher.vplayer;
 
 import fr.NVT.TopOneReacher.Main;
 import fr.NVT.TopOneReacher.boardgame.Board;
-import fr.NVT.TopOneReacher.boardgame.Pawn;
 import fr.NVT.TopOneReacher.boardgame.Position;
 
-public interface VPlayer {
+public abstract class VPlayer {
 	
-	public boolean init(Main main, Pawn pawn, int index);
 	
-	public Position loop(Board board);
+	//Initialization
+	public abstract boolean init(Main main, int id, int index);
+	
+	
+	//Call for each loop turn
+	public abstract Position loop(Board board);
+
+	
+	//Get Player ID (must be different than zero)
+	public abstract int getID();
+
+	
 }
