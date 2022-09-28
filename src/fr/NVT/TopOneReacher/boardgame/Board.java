@@ -115,6 +115,7 @@ public class Board {
 	}
 	
 	
+	//Check if player ends the game
 	private boolean checkEnd(Position pos, int player) {
 		int dir_max = NB_CHECK_2D_AXES;
 		if (this.depth != DEPTH_IN_2D) dir_max = NB_CHECK_3D_AXES;
@@ -125,6 +126,7 @@ public class Board {
 		return false;
 	}
 	
+	//Check pawn alignment in a direction
 	private boolean checkDirection(int dir, Position pos, int player) {
 		int rec = 0;
 		
@@ -139,6 +141,7 @@ public class Board {
 		return false;
 	}
 
+	//Get coordonate in a direction
 	private Position getCheckPosition(int dir, Position pos, int rg) {
 		switch(dir) {
 		//2D & 3D
@@ -176,6 +179,8 @@ public class Board {
 	
 	//DEBUG (non livré dans la version finale)======================================================================
 	
+	
+	//Print the board game
 	public void printBoard() {
 		for (int z = 0; z < depth; z++) {
 			System.out.println("z = " + z + "--------------");
@@ -191,7 +196,7 @@ public class Board {
 		}
 	}
 	
-	
+	//Test the function getCheckPosition
 	public static void test_getCheckPosition() {
 		Board board = new Board(9, 9, 9, 1);
 		Position pos = new Position(4, 4, 4);

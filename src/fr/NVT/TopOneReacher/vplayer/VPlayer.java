@@ -8,6 +8,7 @@ import fr.NVT.TopOneReacher.boardgame.Position;
 public abstract class VPlayer {
 	
 	
+	
 	//Initialization
 	public abstract boolean init(Main main, int id, int index);
 	
