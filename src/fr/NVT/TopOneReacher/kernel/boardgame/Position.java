@@ -1,4 +1,4 @@
-package fr.NVT.TopOneReacher.boardgame;
+package fr.NVT.TopOneReacher.kernel.boardgame;
 
 public class Position {
 

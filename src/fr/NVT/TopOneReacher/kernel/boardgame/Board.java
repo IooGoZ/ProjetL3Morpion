@@ -1,6 +1,8 @@
-package fr.NVT.TopOneReacher.boardgame;
+package fr.NVT.TopOneReacher.kernel.boardgame;
 
-import fr.NVT.TopOneReacher.utils.TwoDimensionsPositionStack;
+import fr.NVT.TopOneReacher.kernel.Game;
+import fr.NVT.TopOneReacher.kernel.utils.GameState;
+import fr.NVT.TopOneReacher.kernel.utils.TwoDimensionsPositionStack;
 
 public class Board {
 
@@ -21,6 +23,10 @@ public class Board {
 	private static final int CHECK_RANGE_MAX = 4;
 	private static final int CHECK_LENGTH = 5;
 	private static final int DEPTH_IN_2D = 1;
+	
+	private static final int TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN = 1;
+	
+	
 	//---------
 	
 	//Size of board
@@ -29,29 +35,36 @@ public class Board {
 	private int depth;
 	//-------------
 	
+	private Game game;
+	
 	//List / Array store the strokes
 	private int[][][] board;//The ints are player's id or PAWN_NONE
 	private TwoDimensionsPositionStack playersStrokes;
 	//------------------------------
 	
 	//State of board
-	private BoardState state = BoardState.LOADING;
+	private GameState state = GameState.LOADING;
 	private int winner;
 	//--------------
+
+	
 	
 	
 	//Constructor
-	public Board(int width, int height, int depth, int nbPlayer) {
+	public Board(Game game, int width, int height, int depth, int nbPlayer) {
+		
+		this.game = game;
+		
 		this.width = width;//x_max
 		this.height = height;//y_max
 		this.depth = depth;//z_max
 		
-		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + 1);
+		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN);
 		
 		this.board = new int[this.width][this.height][this.depth];
 		initBoardTab(this.board);
 		
-		this.state = BoardState.INGAME;
+		this.state = GameState.INGAME;
 	}
 
 	
@@ -82,7 +95,7 @@ public class Board {
 		return depth;
 	}
 
-	public BoardState getState() {
+	public GameState getState() {
 		return this.state;
 	}
 
@@ -101,13 +114,13 @@ public class Board {
 	
 	//Play stroke and validate
 	public boolean playPosition(int player, Position pos) {
-		if (getPawnAtPosition(pos) == Board.PAWN_NONE && player != Board.PAWN_NONE && this.state == BoardState.INGAME) {
+		if (getPawnAtPosition(pos) == Board.PAWN_NONE && player != Board.PAWN_NONE && this.game.getGameState() == GameState.INGAME) {
 			this.playersStrokes.add(player, pos);
 			
-			this.board[pos.getX()][pos.getY()][pos.getZ()] = player;
+			this.setPawnAtPosition(pos,player);
 			
 			if (checkEnd(pos, player)) {
-				this.state = BoardState.FINISHED;
+				this.state = GameState.FINISHED;
 				this.winner = player;
 			}
 			return true;
@@ -194,17 +207,5 @@ public class Board {
 			}
 			System.out.println("-------------------");
 		}
-	}
-	
-	//Test the function getCheckPosition
-	public static void test_getCheckPosition() {
-		Board board = new Board(9, 9, 9, 1);
-		Position pos = new Position(4, 4, 4);
-		for (int dir = 1; dir <= 13; dir++) {
-			for (int rg = -4; rg <= 4; rg++) {
-				board.setPawnAtPosition(board.getCheckPosition(dir, pos, rg), 1);
-			}
-		}
-		board.printBoard();
 	}
 }

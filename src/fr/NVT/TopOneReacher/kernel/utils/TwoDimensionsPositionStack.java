@@ -1,6 +1,6 @@
-package fr.NVT.TopOneReacher.utils;
+package fr.NVT.TopOneReacher.kernel.utils;
 
-import fr.NVT.TopOneReacher.boardgame.Position;
+import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 
 public class TwoDimensionsPositionStack {
 
