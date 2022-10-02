@@ -5,9 +5,9 @@ import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
 import fr.NVT.TopOneReacher.kernel.boardgame.Position;
+import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
+import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
-import fr.NVT.TopOneReacher.kernel.viewer.VViewer;
-import fr.NVT.TopOneReacher.kernel.vplayer.VPlayer;
 
 public class Game extends Thread {
 	
@@ -48,6 +48,7 @@ public class Game extends Thread {
 	private void looper() {
 		while(this.state == GameState.INGAME || this.state == GameState.PAUSED) {
 			if (this.state == GameState.INGAME) loopContent();
+			System.out.println("loop");
 		}
 	}
 	
@@ -70,7 +71,7 @@ public class Game extends Thread {
 			} while (!valid_stroke);
 			this.viewer.showPlayerPosition(pl, pos);
 			if (this.state == GameState.FINISHED) return;
-			else delay();
+			//else delay();
 		}
 	}
 	

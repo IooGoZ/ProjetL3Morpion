@@ -3,7 +3,6 @@ package fr.NVT.TopOneReacher.kernel.boardgame;
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.TwoDimensionsPositionStack;
-import fr.NVT.TopOneReacher.kernel.vplayer.VPlayer;
 
 public class Board {
 
@@ -17,7 +16,7 @@ public class Board {
 	*/
 	
 	//Constants
-	private static final int PAWN_NONE = 0;
+	private static final int PAWN_NONE = -1;
 	
 	private static final int NB_CHECK_3D_AXES = 13;
 	private static final int NB_CHECK_2D_AXES = 4;
@@ -62,7 +61,7 @@ public class Board {
 		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN);
 		
 		this.board = new int[this.width][this.height][this.depth];
-		initBoardTab(this.board);
+		initBoardTab();
 	}
 
 	
@@ -70,11 +69,11 @@ public class Board {
 	
 	
 	//Init board with none value
-	private void initBoardTab(int[][][] tab) {
+	private void initBoardTab() {
 		for (int x = 0; x < this.width; x++) {
-			for (int y = 0; y < this.width; y++) {
-				for (int z = 0; z < this.width; z++) {
-					tab[x][y][z] = Board.PAWN_NONE;
+			for (int y = 0; y < this.height; y++) {
+				for (int z = 0; z < this.depth; z++) {
+					this.board[x][y][z] = Board.PAWN_NONE;
 				}
 			}
 		}
@@ -184,22 +183,5 @@ public class Board {
 		}
 	}
 	
-	//DEBUG (non livré dans la version finale)======================================================================
 	
-	
-	//Print the board game
-	public void printBoard() {
-		for (int z = 0; z < depth; z++) {
-			System.out.println("z = " + z + "--------------");
-			for (int y = 0; y < height; y++) {
-				System.out.print("y = " + y + "----");
-				for (int x = 0; x < width; x++) {
-					int i = board[x][y][z];
-					System.out.print(" " + i + " ");
-				}
-				System.out.println();
-			}
-			System.out.println("-------------------");
-		}
-	}
 }

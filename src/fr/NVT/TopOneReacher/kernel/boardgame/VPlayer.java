@@ -1,9 +1,7 @@
-package fr.NVT.TopOneReacher.kernel.vplayer;
+package fr.NVT.TopOneReacher.kernel.boardgame;
 
 
 import fr.NVT.TopOneReacher.kernel.Game;
-import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 
 public abstract class VPlayer {
 	

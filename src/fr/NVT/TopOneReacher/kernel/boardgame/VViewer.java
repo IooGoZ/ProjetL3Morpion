@@ -1,13 +1,10 @@
-package fr.NVT.TopOneReacher.kernel.viewer;
+package fr.NVT.TopOneReacher.kernel.boardgame;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.Main;
-import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
-import fr.NVT.TopOneReacher.kernel.vplayer.VPlayer;
 
 public abstract class VViewer {
 	
@@ -43,8 +40,6 @@ public abstract class VViewer {
 	public abstract void shownBoard(Board board);
 	
 	public abstract void showPlayerPosition(VPlayer player, Position pos);
-	
-	public abstract void hidePlayerPosition(VPlayer player, Position pos);
 	
 	public abstract void showWinner(VPlayer player);
 	

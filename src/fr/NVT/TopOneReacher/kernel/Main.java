@@ -1,6 +1,7 @@
 package fr.NVT.TopOneReacher.kernel;
 
-import fr.NVT.TopOneReacher.kernel.viewer.VViewer;
+import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
+import fr.NVT.TopOneReacher.modules.viewers.ConsoleViewer;
 
 public class Main {
 
@@ -11,6 +12,6 @@ public class Main {
 	private VViewer viewer;
 	
 	private Main(String[] args) {
-		//viewer = new VViewer();
+		viewer = new ConsoleViewer(this, 20, 20, 1);
 	}
 }
