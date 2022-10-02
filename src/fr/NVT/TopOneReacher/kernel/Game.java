@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
+import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.viewer.VViewer;
 import fr.NVT.TopOneReacher.kernel.vplayer.VPlayer;
@@ -39,23 +40,38 @@ public class Game extends Thread {
 		super.run();
 		this.board = new Board(this, this.width, this.height, this.depth, players.size());
 		this.state = GameState.INGAME;
+		this.viewer.initScreenBoard(this.width, this.height, this.depth);
+		this.viewer.shownBoard(board);
 		this.looper();
 	}
 	
 	private void looper() {
 		while(this.state == GameState.INGAME || this.state == GameState.PAUSED) {
 			if (this.state == GameState.INGAME) loopContent();
-			if (this.delay != DEFAULT_DELAY)
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 		}
 	}
 	
+	private void delay() {
+		if (this.delay != DEFAULT_DELAY)
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	}
+	
 	private void loopContent() {
-		// TODO Auto-generated method stub
+		for (VPlayer pl : this.players) {
+			boolean valid_stroke;
+			Position pos;
+			do {
+				pos = pl.loop(this.board);
+				valid_stroke = this.board.playPosition(pl, pos);
+			} while (!valid_stroke);
+			this.viewer.showPlayerPosition(pl, pos);
+			if (this.state == GameState.FINISHED) return;
+			else delay();
+		}
 	}
 	
 	
@@ -84,6 +100,11 @@ public class Game extends Thread {
 
 	public int getGameId() {
 		return this.game_id;
+	}
+
+	public void setWinner(VPlayer player) {
+		this.state = GameState.FINISHED;
+		this.viewer.showWinner(player);
 	}
 	
 }

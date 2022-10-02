@@ -67,6 +67,7 @@ public abstract class VViewer {
 	
 	protected void runGame(int id) {
 		this.games.get(id).run();
+
 	}
 	
 	protected void pauseResume(int id) {

@@ -3,6 +3,7 @@ package fr.NVT.TopOneReacher.kernel.boardgame;
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.TwoDimensionsPositionStack;
+import fr.NVT.TopOneReacher.kernel.vplayer.VPlayer;
 
 public class Board {
 
@@ -43,7 +44,6 @@ public class Board {
 	//------------------------------
 	
 	//State of board
-	private GameState state = GameState.LOADING;
 	private int winner;
 	//--------------
 
@@ -63,8 +63,6 @@ public class Board {
 		
 		this.board = new int[this.width][this.height][this.depth];
 		initBoardTab(this.board);
-		
-		this.state = GameState.INGAME;
 	}
 
 	
@@ -95,10 +93,6 @@ public class Board {
 		return depth;
 	}
 
-	public GameState getState() {
-		return this.state;
-	}
-
 	public int getWinner() {
 		return this.winner;
 	}
@@ -113,15 +107,15 @@ public class Board {
 	
 	
 	//Play stroke and validate
-	public boolean playPosition(int player, Position pos) {
-		if (getPawnAtPosition(pos) == Board.PAWN_NONE && player != Board.PAWN_NONE && this.game.getGameState() == GameState.INGAME) {
-			this.playersStrokes.add(player, pos);
+	public boolean playPosition(VPlayer player, Position pos) {
+		int player_id = player.getId();
+		if (getPawnAtPosition(pos) == Board.PAWN_NONE && player_id != Board.PAWN_NONE && this.game.getGameState() == GameState.INGAME) {
+			this.playersStrokes.add(player_id, pos);
 			
-			this.setPawnAtPosition(pos,player);
+			this.setPawnAtPosition(pos,player_id);
 			
-			if (checkEnd(pos, player)) {
-				this.state = GameState.FINISHED;
-				this.winner = player;
+			if (checkEnd(pos, player_id)) {
+				this.game.setWinner(player);
 			}
 			return true;
 		} else return false;
