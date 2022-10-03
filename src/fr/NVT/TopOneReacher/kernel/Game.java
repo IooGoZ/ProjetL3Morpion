@@ -48,7 +48,6 @@ public class Game extends Thread {
 	private void looper() {
 		while(this.state == GameState.INGAME || this.state == GameState.PAUSED) {
 			if (this.state == GameState.INGAME) loopContent();
-			System.out.println("loop");
 		}
 	}
 	
@@ -69,9 +68,11 @@ public class Game extends Thread {
 				pos = pl.loop(this.board);
 				valid_stroke = this.board.playPosition(pl, pos);
 			} while (!valid_stroke);
-			this.viewer.showPlayerPosition(pl, pos);
 			if (this.state == GameState.FINISHED) return;
-			//else delay();
+			else {
+				this.viewer.showPlayerPosition(pl, pos);
+				delay();
+			}
 		}
 	}
 	
@@ -91,8 +92,8 @@ public class Game extends Thread {
 
 	public int createNewPlayer(VPlayer vPlayer) {
 		int id = players.size();
-		players.add(vPlayer);
-		return id;
+		players.add(id, vPlayer);
+		return id + 1;
 	}
 
 	public GameState getGameState() {
@@ -103,8 +104,9 @@ public class Game extends Thread {
 		return this.game_id;
 	}
 
-	public void setWinner(VPlayer player) {
+	public void setWinner(VPlayer player, Position pos) {
 		this.state = GameState.FINISHED;
+		this.viewer.showPlayerPosition(player, pos);
 		this.viewer.showWinner(player);
 	}
 	

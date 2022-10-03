@@ -15,8 +15,6 @@ public class ConsoleViewer extends VViewer {
 	private static final int DEFAULT_HEIGHT = 100;
 	private static final int DEFAULT_DEPTH = 1;
 	
-	private static final int DEFAULT_GAME_ID = 0;
-	
 	private int width, height, depth;
 	private Game game;
 	
@@ -24,10 +22,15 @@ public class ConsoleViewer extends VViewer {
 	
 	public ConsoleViewer(Main main, int width, int height, int depth) {
 		super(main);
-		this.game = new Game(this, DEFAULT_GAME_ID, width, height, depth);
 		
-		this.game.createNewPlayer(new RandomPlayer(game, "One"));
-		this.game.createNewPlayer(new RandomPlayer(game, "Two"));
+		int game_id =  super.createNewGame(width, height, depth);
+		this.game = getGame(game_id);
+		
+		new RandomPlayer(game, "One");
+		new RandomPlayer(game, "Two");
+		new RandomPlayer(game, "Three");
+		
+		//super.setDelay(0, 1.0d);
 		
 		this.game.run();
 		
@@ -89,10 +92,41 @@ public class ConsoleViewer extends VViewer {
 		for (int z = 0; z < this.depth; z++) {
 			System.out.println("z = " + z + "--------------");
 			for (int y = 0; y < this.height; y++) {
-				System.out.print("y = " + y + "----");
+				if (y < 10 ) System.out.print("y = 0" + y + "----");
+				else System.out.print("y = " + y + "----");
 				for (int x = 0; x < this.width; x++) {
 					int i = this.fake_board[x][y][z];
-					System.out.print(" " + i + " ");
+					char c;
+					switch (i) {
+					case 1: {
+						c = 'X'; break;
+					}
+					case 2: {
+						c = '0'; break;
+					}
+					case 3: {
+						c = '$'; break;
+					}
+					case 4: {
+						c = '#'; break;
+					}
+					case 5: {
+						c = ':'; break;
+					}
+					case 6: {
+						c = '!'; break;
+					}
+					case 7: {
+						c = '?'; break;
+					}
+					case 8: {
+						c = '&'; break;
+					}
+					default:
+						c = ' ';
+					}
+					
+					System.out.print(" " + c + " ");
 				}
 				System.out.println();
 			}

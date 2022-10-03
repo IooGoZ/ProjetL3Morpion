@@ -16,7 +16,7 @@ public class Board {
 	*/
 	
 	//Constants
-	private static final int PAWN_NONE = -1;
+	private static final int PAWN_NONE = 0;
 	
 	private static final int NB_CHECK_3D_AXES = 13;
 	private static final int NB_CHECK_2D_AXES = 4;
@@ -25,6 +25,7 @@ public class Board {
 	private static final int DEPTH_IN_2D = 1;
 	
 	private static final int TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN = 1;
+	private static final int TWO_DIMENSIONS_POSITION_STACK_SHIFT = 1;
 	
 	
 	//---------
@@ -58,7 +59,7 @@ public class Board {
 		this.height = height;//y_max
 		this.depth = depth;//z_max
 		
-		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN);
+		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN, TWO_DIMENSIONS_POSITION_STACK_SHIFT);
 		
 		this.board = new int[this.width][this.height][this.depth];
 		initBoardTab();
@@ -114,7 +115,7 @@ public class Board {
 			this.setPawnAtPosition(pos,player_id);
 			
 			if (checkEnd(pos, player_id)) {
-				this.game.setWinner(player);
+				this.game.setWinner(player, pos);
 			}
 			return true;
 		} else return false;
