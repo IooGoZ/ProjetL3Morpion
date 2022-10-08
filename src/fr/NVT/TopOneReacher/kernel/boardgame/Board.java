@@ -17,6 +17,7 @@ public class Board {
 	
 	//Constants
 	private static final int PAWN_NONE = 0;
+	public static final int DEFAULT_OUT_PAWN = -1;
 	
 	private static final int NB_CHECK_3D_AXES = 13;
 	private static final int NB_CHECK_2D_AXES = 4;
@@ -26,25 +27,29 @@ public class Board {
 	
 	private static final int TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN = 1;
 	private static final int TWO_DIMENSIONS_POSITION_STACK_SHIFT = 1;
+
+	
 	
 	
 	//---------
 	
 	//Size of board
-	private int height;
-	private int width;
-	private int depth;
+	private final int height;
+	private final int width;
+	private final int depth;
+	
 	//-------------
 	
-	private Game game;
+	private final Game game;
 	
 	//List / Array store the strokes
-	private int[][][] board;//The ints are player's id or PAWN_NONE
-	private TwoDimensionsPositionStack playersStrokes;
+	private final int[][][] board;//The ints are player's id or PAWN_NONE
+	private final TwoDimensionsPositionStack playersStrokes;
 	//------------------------------
 	
 	//State of board
 	private int winner;
+	private final int nbPlayer;
 	//--------------
 
 	
@@ -54,6 +59,7 @@ public class Board {
 	public Board(Game game, int width, int height, int depth, int nbPlayer) {
 		
 		this.game = game;
+		this.nbPlayer = nbPlayer;
 		
 		this.width = width;//x_max
 		this.height = height;//y_max
@@ -98,7 +104,9 @@ public class Board {
 	}
 	
 	public int getPawnAtPosition(Position pos) {
-		return this.board[pos.getX()][pos.getY()][pos.getZ()];
+		if (Position.validatePosition(pos, width, height, depth)) 
+			return this.board[pos.getX()][pos.getY()][pos.getZ()];
+		return DEFAULT_OUT_PAWN;
 	}
 
 	private void setPawnAtPosition(Position pos, int id) {
@@ -127,14 +135,14 @@ public class Board {
 		int dir_max = NB_CHECK_2D_AXES;
 		if (this.depth != DEPTH_IN_2D) dir_max = NB_CHECK_3D_AXES;
 		
-		for (int dir = 1; dir <= dir_max; dir++) {
+		for (short dir = 1; dir <= dir_max; dir++) {
 			if (checkDirection(dir, pos, player)) return true;
 		}
 		return false;
 	}
 	
 	//Check pawn alignment in a direction
-	private boolean checkDirection(int dir, Position pos, int player) {
+	private boolean checkDirection(short dir, Position pos, int player) {
 		int rec = 0;
 		
 		for (int rg = -CHECK_RANGE_MAX; rg <= CHECK_RANGE_MAX; rg++) {
@@ -149,7 +157,7 @@ public class Board {
 	}
 
 	//Get coordonate in a direction
-	private Position getCheckPosition(int dir, Position pos, int rg) {
+	public Position getCheckPosition(short dir, Position pos, int rg) {
 		switch(dir) {
 		//2D & 3D
 		case 1 :
@@ -184,5 +192,11 @@ public class Board {
 		}
 	}
 	
-	
+	public Position[] getLastPositions() {
+		Position[] poss = new Position[this.nbPlayer];
+		for (int i = 1; i < this.nbPlayer; i++) {
+			poss[i] = playersStrokes.getLastPosition(i);
+		}
+		return poss;
+	}
 }

@@ -5,9 +5,9 @@ import fr.NVT.TopOneReacher.kernel.Game;
 
 public abstract class VPlayer {
 	
-	private Game game;
-	private String name;
-	private int id;
+	private final Game game;
+	private final String name;
+	private final int id;
 
 
 	protected VPlayer(Game game, String name) {
