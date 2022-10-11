@@ -16,7 +16,7 @@ public class Board {
 	*/
 	
 	//Constants
-	private static final int PAWN_NONE = 0;
+	public static final int PAWN_NONE = 0;
 	public static final int DEFAULT_OUT_PAWN = -1;
 	
 	private static final int NB_CHECK_3D_AXES = 13;
@@ -135,14 +135,14 @@ public class Board {
 		int dir_max = NB_CHECK_2D_AXES;
 		if (this.depth != DEPTH_IN_2D) dir_max = NB_CHECK_3D_AXES;
 		
-		for (short dir = 1; dir <= dir_max; dir++) {
+		for (byte dir = 1; dir <= dir_max; dir++) {
 			if (checkDirection(dir, pos, player)) return true;
 		}
 		return false;
 	}
 	
 	//Check pawn alignment in a direction
-	private boolean checkDirection(short dir, Position pos, int player) {
+	private boolean checkDirection(byte dir, Position pos, int player) {
 		int rec = 0;
 		
 		for (int rg = -CHECK_RANGE_MAX; rg <= CHECK_RANGE_MAX; rg++) {
@@ -157,7 +157,7 @@ public class Board {
 	}
 
 	//Get coordonate in a direction
-	public Position getCheckPosition(short dir, Position pos, int rg) {
+	public Position getCheckPosition(byte dir, Position pos, int rg) {
 		switch(dir) {
 		//2D & 3D
 		case 1 :
@@ -194,8 +194,8 @@ public class Board {
 	
 	public Position[] getLastPositions() {
 		Position[] poss = new Position[this.nbPlayer];
-		for (int i = 1; i < this.nbPlayer; i++) {
-			poss[i] = playersStrokes.getLastPosition(i);
+		for (int i = 1; i <= this.nbPlayer; i++) {
+			poss[i-1] = playersStrokes.getLastPosition(i);
 		}
 		return poss;
 	}

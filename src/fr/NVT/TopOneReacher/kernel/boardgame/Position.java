@@ -37,6 +37,9 @@ public class Position {
 	}
 	
 	public static boolean validatePosition(Position pos, int width, int height, int depth) {
-		return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < width && pos.y < height && pos.z < depth;
+		if (pos != null)
+			return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < width && pos.y < height && pos.z < depth;
+		else
+			return false;
 	}
 }

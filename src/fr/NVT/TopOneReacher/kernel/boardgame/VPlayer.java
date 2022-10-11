@@ -6,6 +6,8 @@ import fr.NVT.TopOneReacher.kernel.Game;
 public abstract class VPlayer {
 	
 	private final Game game;
+	
+
 	private final String name;
 	private final int id;
 
@@ -22,6 +24,10 @@ public abstract class VPlayer {
 
 	public int getId() {
 		return id;
+	}
+	
+	protected Game getGame() {
+		return game;
 	}
 	
 	//Call for each loop turn

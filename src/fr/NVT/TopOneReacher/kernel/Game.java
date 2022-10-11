@@ -20,7 +20,7 @@ public class Game extends Thread {
 	private final int game_id;
 	private Board board;
 	private final int width, height, depth;
-	
+
 	private GameState state;
 
 	private long delay;
@@ -102,6 +102,10 @@ public class Game extends Thread {
 
 	public int getGameId() {
 		return this.game_id;
+	}
+	
+	public int getNbPlayers() {
+		return players.size();
 	}
 
 	public void setWinner(VPlayer player, Position pos) {

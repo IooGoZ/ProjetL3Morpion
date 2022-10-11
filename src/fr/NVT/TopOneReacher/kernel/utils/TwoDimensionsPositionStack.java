@@ -35,11 +35,15 @@ public class TwoDimensionsPositionStack {
 	}
 	
 	public Position getLastPosition(int index) {
-		return this.stack[index-shift][this.stacksLength[index-shift]-1];
+		int len = this.stacksLength[index-shift];
+		if (len==0) return null;
+		return this.stack[index-shift][len-1];
 	}
 	
 	public Position getPosition(int indexX, int indexY) {
-		return this.stack[indexX-shift][this.stacksLength[indexX-shift]-1-indexY];
+		int len = this.stacksLength[indexX-shift];
+		if (len==0 || indexY > (len-1)) return null;
+		return this.stack[indexX-shift][len-1-indexY];
 	}
 
 }
