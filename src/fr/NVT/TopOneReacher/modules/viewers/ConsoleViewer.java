@@ -8,6 +8,8 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
+import fr.NVT.TopOneReacher.modules.players.TestPlayer;
+import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
 
 public class ConsoleViewer extends VViewer {
 
@@ -26,8 +28,10 @@ public class ConsoleViewer extends VViewer {
 		int game_id =  super.createNewGame(width, height, depth);
 		this.game = getGame(game_id);
 		
-		new TeachersPlayer(game, "One");
-		new TeachersPlayer(game, "Two");
+		//new TestPlayer(game, "One");
+		
+  		new TeachersPlayer(game, "Teachers");
+		new TopTwoReacherPlayer(game, "TopTwoReacher");
 		
 		super.setDelay(0, 0.2d);
 		

@@ -46,7 +46,6 @@ public class TeachersPlayer extends VPlayer {
 		return null;
 	}
 	
-	
 	//Evalue l'ensemble des coups autour d'une position
 	private void evalutatePosition(Position pos) {
 		

@@ -29,5 +29,19 @@ public class DirectionPosition {
 	public DirectionPosition(Position pos , byte dir) {
 		this(pos, dir, (byte) -1);
 	}
+
+	public short getRgMin() {
+		if (zone == 1)
+			return -4;
+		else
+			return 0;
+	}
+
+	public short getRgMax() {
+		if (zone == 1)
+			return 0;
+		else
+			return 4;
+	}
 	
 }
