@@ -14,11 +14,20 @@ public class TopTwoReacherPlayer extends VPlayer {
 	
 	private Board board;
 	private HashMap<DirectionPosition, OptimumZone> notes;
+	private HashMap<DirectionPosition, Integer> heatMap;
 	
 	public TopTwoReacherPlayer(Game game, String name) {
 		super(game, name);
 	}
 
+	
+	private void addToHeatMap(DirectionPosition dp, int val) {
+		if (heatMap.containsKey(dp) ) {
+			int newval = heatMap.get(dp) + val;
+			heatMap.remove(dp);
+			heatMap.put(dp, newval);
+		} else heatMap.put(dp, val);
+	}
 	
 	private byte dpToByte(DirectionPosition dp) {
 		//Definition de la zone d'analyse
@@ -65,7 +74,22 @@ public class TopTwoReacherPlayer extends VPlayer {
 			byte dp_byte = dpToByte(dp);
 			if (dp_byte == -1) return;
 			OptimumZone oz = OptimumZone.getOptimumZone(dp_byte);
+			boolean reversable = oz.getReversableValue() == dp_byte;
 			notes.put(dp, oz);
+			if (id == super.getId()) {
+				short rg;
+				if (reversable) rg = (byte) (dp.getRgMax() - (oz.getOptimum() - 1));
+				else rg = (byte) (dp.getRgMin() + (oz.getOptimum() - 1));
+				Position optimum_pos = board.getCheckPosition(dp.getDir(), dp.getPos(), rg);
+				
+				addToHeatMap(dp, 100);
+				
+				for (short i = dp.getRgMin(); i <= dp.getRgMax(); i++) {
+					Position pos = board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+					if (pos != optimum_pos && board.getPawnAtPosition(pos) == Board.PAWN_NONE)
+						addToHeatMap(dp, 50);
+				}
+			}
 		}
 	}
 	
@@ -74,6 +98,7 @@ public class TopTwoReacherPlayer extends VPlayer {
 	public Position loop(Board board) {
 		this.board = board;
 		this.notes = new HashMap<>();
+		this.heatMap = new HashMap<>();
 		
 		//Récupération de l'ensemble des positions jouées par les joueurs
 		Position[] positions = board.getLastPositions(0);
@@ -114,16 +139,41 @@ public class TopTwoReacherPlayer extends VPlayer {
 		}
 		
 		if (notes.size() != 0) {
-			//On calcule la position optimum
-			OptimumZone oz = notes.get(max_dp);
-			byte dp_byte = dpToByte(max_dp);
-			boolean reversable = oz.getReversableValue() == dp_byte;
-			byte rg;
-			if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimum() - 1));
-			else rg = (byte) (max_dp.getRgMin() + (oz.getOptimum() - 1));
-			
-			return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
-		} else return getRandomPosition();
+			if (max_note > 450) {
+				//On calcule la position optimum
+				OptimumZone oz = notes.get(max_dp);
+				byte dp_byte = dpToByte(max_dp);
+				boolean reversable = oz.getReversableValue() == dp_byte;
+				byte rg;
+				if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimum() - 1));
+				else rg = (byte) (max_dp.getRgMin() + (oz.getOptimum() - 1));
+				
+				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
+			} else if (heatMap.size() != 0) {
+				max_dp = null;
+				max_note = -1;
+				
+				for (DirectionPosition dp : heatMap.keySet()) {
+					int note = heatMap.get(dp);
+					if (max_dp == null || note > max_note) {
+						max_note = note;
+						max_dp = dp;
+					}
+				}
+				
+				//On calcule la position optimum
+				OptimumZone oz = notes.get(max_dp);
+				byte dp_byte = dpToByte(max_dp);
+				boolean reversable = oz.getReversableValue() == dp_byte;
+				byte rg;
+				if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimum() - 1));
+				else rg = (byte) (max_dp.getRgMin() + (oz.getOptimum() - 1));
+				
+				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
+				
+			}
+		}
+		return getRandomPosition();
 	}
 
 	//Retourne une position random inoccuppée 

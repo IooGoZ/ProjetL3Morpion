@@ -8,7 +8,6 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
-import fr.NVT.TopOneReacher.modules.players.TestPlayer;
 import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
 
 public class ConsoleViewer extends VViewer {
@@ -30,10 +29,10 @@ public class ConsoleViewer extends VViewer {
 		
 		//new TestPlayer(game, "One");
 		
-  		new TeachersPlayer(game, "Teachers");
-		new TopTwoReacherPlayer(game, "TopTwoReacher");
+  		new TeachersPlayer(game, "TeachersPlayer One");
+		new TopTwoReacherPlayer(game, "TopTwoReacher Two");
 		
-		super.setDelay(0, 0.2d);
+		//super.setDelay(0, 0.2d);
 		
 		this.game.run();
 		
@@ -71,13 +70,15 @@ public class ConsoleViewer extends VViewer {
 
 	@Override
 	public void showPlayerPosition(VPlayer player, Position pos) {
+		if (player == null) return;
 		fake_board[pos.getX()][pos.getY()][pos.getZ()] = player.getId();
 		print();
 	}
 
 	@Override
 	public void showWinner(VPlayer player) {
-		System.out.println(player.getName() + " a gagné la partie !");
+		if (player == null) System.out.println("La partie est nulle !");
+		else System.out.println(player.getName() + " a gagné la partie !");
 	}
 
 	@Override

@@ -125,22 +125,40 @@ public class Board {
 			
 			this.setPawnAtPosition(pos,player_id);
 			
-			if (checkEnd(pos, player_id)) {
-				this.game.setWinner(player, pos);
-			}
+			checkEnd(pos, player);
 			return true;
 		} else return false;
 	}
 	
 	
 	//Check if player ends the game
-	private boolean checkEnd(Position pos, int player) {
+	private boolean checkEnd(Position pos, VPlayer player) {
 		int dir_max = NB_CHECK_2D_AXES;
+		
+		int none_size = 0;
+		
 		if (this.depth != DEPTH_IN_2D) dir_max = NB_CHECK_3D_AXES;
 		
 		for (byte dir = 1; dir <= dir_max; dir++) {
-			if (checkDirection(dir, pos, player)) return true;
+			if (checkDirection(dir, pos, player.getId())) {
+				this.game.setWinner(player, pos);
+				return true;
+			}
 		}
+		
+		for (int x = 0; x < this.width; x++) {
+			for (int y = 0; y < this.height; y++) {
+				for (int z = 0; z < this.depth; z++) {
+					if (this.board[x][y][z] == Board.PAWN_NONE) none_size++;
+				}
+			}
+		}
+		
+		if (none_size == 0) {
+			this.game.setWinner(null, pos);
+			return true;
+		}
+		
 		return false;
 	}
 	

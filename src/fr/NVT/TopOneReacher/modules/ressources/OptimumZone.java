@@ -29,7 +29,7 @@ public enum OptimumZone {
 	private final byte reversable_value;
 	
 	
-	private static final double RATIO = 1.0d;
+	private static final double RATIO = 0.0d;
 	
 
 	private OptimumZone(int current_prioritie, int ennemie_prioritie, byte optimum, byte reversable_value) {
