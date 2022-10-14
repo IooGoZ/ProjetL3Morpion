@@ -4,9 +4,9 @@ package fr.NVT.TopOneReacher.modules.viewers;
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.Main;
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
 
 public class ConsoleViewer extends VViewer {
@@ -29,7 +29,7 @@ public class ConsoleViewer extends VViewer {
 		new TeachersPlayer(game, "One");
 		new TeachersPlayer(game, "Two");
 		
-		//super.setDelay(0, 1.0d);
+		super.setDelay(0, 0.2d);
 		
 		this.game.run();
 		
@@ -125,9 +125,9 @@ public class ConsoleViewer extends VViewer {
 						c = ' ';
 					}
 					
-					System.out.print(" " + c + " ");
+					System.out.print("|" + c);
 				}
-				System.out.println();
+				System.out.println("|");
 			}
 			System.out.println("-------------------");
 		}

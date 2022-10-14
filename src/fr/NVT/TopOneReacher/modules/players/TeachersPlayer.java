@@ -4,16 +4,15 @@ import java.util.HashMap;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.ressources.DirectionPosition;
-import fr.NVT.TopOneReacher.modules.ressources.IntegerTabUtils;
 import fr.NVT.TopOneReacher.modules.ressources.PlayerUtils;
 
 public class TeachersPlayer extends VPlayer {
 	
 	private Board board;
-	private HashMap<DirectionPosition, Object> notes = new HashMap<>();
+	private HashMap<DirectionPosition, Object> notes;
 	
 	public TeachersPlayer(Game game, String name) {
 		super(game, name);
@@ -29,27 +28,51 @@ public class TeachersPlayer extends VPlayer {
 			rg_min = 0;
 			rg_max = 4;
 		}
-		for (int i = rg_max; i >= rg_min; i++) {
-			Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
-			int pawn = this.board.getPawnAtPosition(check_pos);
-			if (pawn == Board.PAWN_NONE) return check_pos;
+		
+		if (dp.getZone() != 1) {
+			for (short i = rg_min; i <= rg_max; i--) {
+				Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+				int pawn = this.board.getPawnAtPosition(check_pos);
+				if (pawn == Board.PAWN_NONE) return check_pos;
+			}
+		} else {
+			for (short i = rg_max; i >= rg_min; i++) {
+				Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+				int pawn = this.board.getPawnAtPosition(check_pos);
+				if (pawn == Board.PAWN_NONE) return check_pos;
+			}
 		}
+		
 		return null;
 	}
 	
 	
+	//Evalue l'ensemble des coups autour d'une position
 	private void evalutatePosition(Position pos) {
+		
+		//Si la position est null, sa note n'existe pas
+		if (pos == null)  {
+			return;
+		}
+		
+		//2D / 3D
 		int dir_max = 4;
 		if (this.board.getDepth() != 1) 
 			dir_max = 13;
 		
+		
+		//Pour l'ensemble des directions autour de la position
 		for (byte dir = 1; dir <= dir_max; dir++) {
+			//On réalise l'evaluation des deux zones.
 			evaluateZonedDirection(new DirectionPosition(pos, dir, (byte) 1));
 			evaluateZonedDirection(new DirectionPosition(pos, dir, (byte) 0));
 		}
 	}
 	
+	//Evaluation d'une zone
 	private void evaluateZonedDirection(DirectionPosition dp) {
+		
+		//Definition de la zone d'analyse
 		short rg_min, rg_max;
 		
 		if (dp.getZone() == 1) {
@@ -60,44 +83,34 @@ public class TeachersPlayer extends VPlayer {
 			rg_max = 4;
 		}
 		
-		if (dp.getPos() == null)  {
-			notes.put(dp, -1);
-			return;
-		}
+		//On récupère le joueur à analyser
 		int id = this.board.getPawnAtPosition(dp.getPos());
-		if (!PlayerUtils.zoneIsOpen(this.board, id, dp.getPos(), dp.getDir(), rg_min, rg_max)) {
-			//Defense
-			defend(dp, rg_min, rg_max, id);
-		} else {
-			attack(dp, rg_min, rg_max, id);
-		}
-	}
-	
-	
-	private void defend(DirectionPosition dp, short rg_min, short rg_max, int id) {
-		int tab[] = new int[super.getGame().getNbPlayers()];
+		//Si la zone est ouverte, On évalue une stratégie
+		evalutateDP(dp, rg_min, rg_max, id);
 		
-		for (int i = rg_min; i <= rg_max; i++) {
-			Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
-			int pawn = this.board.getPawnAtPosition(check_pos);
-			if (pawn > Board.PAWN_NONE) tab[pawn-1]++;
-		}
-		int max_id = IntegerTabUtils.maxValueId(tab)+1;
-		if (PlayerUtils.zoneIsOpen(this.board, max_id, dp.getPos(), dp.getDir(), rg_min, rg_max)) {
-			int note = (int) Math.pow(5, tab[max_id-1]);
-			notes.put(dp, note);
-		} else
-			notes.put(dp, -1);
 	}
 	
-	private void attack(DirectionPosition dp, short rg_min, short rg_max, int id) {
+	private void evalutateDP(DirectionPosition dp, short rg_min, short rg_max, int id) {
+		
+		//On compte le nombre de pion
 		int val = 0;
-		for (int i = rg_min; i <= rg_max; i++) {
+		int ennemies_val = 0;
+		
+		for (short i = rg_min; i <= rg_max; i++) {
 			Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
 			int pawn = this.board.getPawnAtPosition(check_pos);
+			
 			if (pawn == id) val++;
+			else if (pawn != Board.PAWN_NONE) ennemies_val++;
 		}
-		int note = (int) Math.pow(10, val);
+		
+		int note;
+		
+		//Si on evalue le joueur courant
+		if (super.getId() == id)
+				note = (1 - ennemies_val) * (int) Math.pow(10, (double) val);
+		//Si on evalue un joueur ennemie
+		else note = (5 - ennemies_val) * (int)  Math.pow(10, (double) (val-1));
 		notes.put(dp, note);
 	}
 	
@@ -105,36 +118,75 @@ public class TeachersPlayer extends VPlayer {
 	@Override
 	public Position loop(Board board) {
 		this.board = board;
+		this.notes = new HashMap<>();
 		
-		Position[] positions = board.getLastPositions();
+		//Définition de la valeur résultat
+		Position res = null;
 		
-		for(int i = 0; i < super.getGame().getNbPlayers(); i++) {
-			Position pos = positions[i];
-			evalutatePosition(pos);
+		//Récupération de l'ensemble des positions jouées par les joueurs
+		Position[] positions = board.getLastPositions(0);
+		
+		//Si la liste est vide (=1er tour) -> position random
+		if (positions == null)
+			return getRandomPosition();
+		
+		//On évalue toutes les positions jouées
+		for (int j = 1; j <= this.board.getLastPositionsSize(); j ++) {
+			if (positions == null)
+				break;
+			for(int i = 0; i < super.getGame().getNbPlayers(); i++) {
+				//Récupération de la position
+				Position evalpos = positions[i];
+				//evaluation
+				evalutatePosition(evalpos);
+			}
+			//Actualisation de la valeur boucle
+			positions = board.getLastPositions(j);
 		}
 		
+		//Préparation du tri
 		DirectionPosition max_dp = null;
 		int max_note = -1;
 		
-		
-		for (DirectionPosition dp : notes.keySet()) {
-			int note = (int) notes.get(dp);
-			if (max_dp == null || note > max_note) {
-				max_note = note;
-				max_dp = dp;
+		//Tri et calcule de position
+		do {
+			//On récupère la meilleure note de la liste
+			for (DirectionPosition dp : notes.keySet()) {
+				int note = (int) notes.get(dp);
+				if (max_dp == null || note > max_note) {
+					max_note = note;
+					max_dp = dp;
+				}
 			}
-		}
+			
+			//On calcule la position optimum
+			res = calculateBestPosition(max_dp);
+			
+			notes.remove(max_dp);
+			max_dp = null;
+			max_note = -1;
+			
+			
+			//Si la position est null, on recommence avec la n-ieme meilleure
+		} while(res == null && notes.size() > 0);
 		
-		if (max_dp.getPos() == null) {
-			int x = PlayerUtils.randomInt(0, board.getWidth());
-			int y = PlayerUtils.randomInt(0, board.getHeight());
-			int z = PlayerUtils.randomInt(0, board.getDepth());
-			return new Position(x, y, z);
-		}
+		//Si malgré tout la position n'est pas toruvé on renvoie une position aléatoire
+		if (res == null) return getRandomPosition();
 		
-		Position pos = calculateBestPosition(max_dp);
-		
-		return pos;
+		//sinon résultat
+		else return res;
 	}
 
+	//Retourne une position random inoccuppée 
+	private Position getRandomPosition() {
+		int x, y, z;
+		Position pos;
+		do {
+			x = PlayerUtils.randomInt(0, board.getWidth());
+			y = PlayerUtils.randomInt(0, board.getHeight());
+			z = PlayerUtils.randomInt(0, board.getDepth());
+			pos = new Position(x, y, z);
+		} while(this.board.getPawnAtPosition(pos)!=Board.PAWN_NONE);
+		return new Position(x, y, z);
+	}
 }

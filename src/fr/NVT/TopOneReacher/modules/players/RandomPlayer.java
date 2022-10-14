@@ -2,8 +2,8 @@ package fr.NVT.TopOneReacher.modules.players;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.ressources.PlayerUtils;
 
 public class RandomPlayer extends VPlayer {

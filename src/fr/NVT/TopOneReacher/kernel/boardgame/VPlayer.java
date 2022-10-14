@@ -2,6 +2,7 @@ package fr.NVT.TopOneReacher.kernel.boardgame;
 
 
 import fr.NVT.TopOneReacher.kernel.Game;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 
 public abstract class VPlayer {
 	

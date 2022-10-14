@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.Main;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 
 public abstract class VViewer {
 	
@@ -12,7 +13,7 @@ public abstract class VViewer {
 	
 	
 	private List<Game> games = new ArrayList<>();
-	protected final Main main;
+	public final Main main;
 	
 	private int current_game_id;
 	

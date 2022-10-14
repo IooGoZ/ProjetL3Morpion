@@ -2,6 +2,7 @@ package fr.NVT.TopOneReacher.kernel.boardgame;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.kernel.utils.TwoDimensionsPositionStack;
 
 public class Board {
@@ -51,6 +52,7 @@ public class Board {
 	private int winner;
 	private final int nbPlayer;
 	//--------------
+	private int lastPositionSize;
 
 	
 	
@@ -65,7 +67,8 @@ public class Board {
 		this.height = height;//y_max
 		this.depth = depth;//z_max
 		
-		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN, TWO_DIMENSIONS_POSITION_STACK_SHIFT);
+		this.lastPositionSize = (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN;
+		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, this.lastPositionSize, TWO_DIMENSIONS_POSITION_STACK_SHIFT);
 		
 		this.board = new int[this.width][this.height][this.depth];
 		initBoardTab();
@@ -145,7 +148,7 @@ public class Board {
 	private boolean checkDirection(byte dir, Position pos, int player) {
 		int rec = 0;
 		
-		for (int rg = -CHECK_RANGE_MAX; rg <= CHECK_RANGE_MAX; rg++) {
+		for (short rg = -CHECK_RANGE_MAX; rg <= CHECK_RANGE_MAX; rg++) {
 			if (rec == CHECK_LENGTH) return true;
 			Position check_position = getCheckPosition(dir, pos, rg);
 			if (!Position.validatePosition(check_position, this.width, this.height, this.depth)) continue;
@@ -157,7 +160,7 @@ public class Board {
 	}
 
 	//Get coordonate in a direction
-	public Position getCheckPosition(byte dir, Position pos, int rg) {
+	public Position getCheckPosition(byte dir, Position pos, short rg) {
 		switch(dir) {
 		//2D & 3D
 		case 1 :
@@ -192,11 +195,18 @@ public class Board {
 		}
 	}
 	
-	public Position[] getLastPositions() {
+	public Position[] getLastPositions(int index) {
 		Position[] poss = new Position[this.nbPlayer];
+		boolean isNull = true;
 		for (int i = 1; i <= this.nbPlayer; i++) {
-			poss[i-1] = playersStrokes.getLastPosition(i);
+			poss[i-1] = playersStrokes.getPosition(i, index);
+			if (poss[i-1] != null) isNull = false;
 		}
-		return poss;
+		if (isNull) return null;
+		else return poss;
+	}
+	
+	public int getLastPositionsSize() {
+		return this.lastPositionSize;
 	}
 }

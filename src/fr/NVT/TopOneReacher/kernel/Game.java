@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 
 public class Game extends Thread {
 	
 	private static final double DEFAULT_DELAY = -1.0d;
 	private static final double SEC_TO_MILLIS = 1000d;
+	
+	private static final int LIMIT_PLAYER_TRY = 3;
 	
 	private List<VPlayer> players = new ArrayList<>();
 	
@@ -64,9 +66,14 @@ public class Game extends Thread {
 		for (VPlayer pl : this.players) {
 			boolean valid_stroke;
 			Position pos;
+			int i = 0;
 			do {
 				pos = pl.loop(this.board);
 				valid_stroke = this.board.playPosition(pl, pos);
+				i++;
+				if (i > LIMIT_PLAYER_TRY) {
+					this.viewer.main.exceptions(pl.getName() + " a depasser sa limite d'essaie.");
+				}
 			} while (!valid_stroke);
 			if (this.state == GameState.FINISHED) return;
 			else {

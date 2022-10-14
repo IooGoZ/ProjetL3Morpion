@@ -1,6 +1,6 @@
 package fr.NVT.TopOneReacher.modules.ressources;
 
-import fr.NVT.TopOneReacher.kernel.boardgame.Position;
+import fr.NVT.TopOneReacher.kernel.utils.Position;
 
 public class DirectionPosition {
 	

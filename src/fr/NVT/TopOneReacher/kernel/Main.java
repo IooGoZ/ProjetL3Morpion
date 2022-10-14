@@ -11,4 +11,9 @@ public class Main {
 	private Main(String[] args) {
 		new ConsoleViewer(this, 20, 20, 1);
 	}
+	
+	public void exceptions(String msg) {
+		System.err.println("Error : " + msg);
+		System.exit(-1);
+	}
 }
