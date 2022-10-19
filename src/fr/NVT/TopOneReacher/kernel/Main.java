@@ -9,7 +9,7 @@ public class Main {
 	}
 	
 	private Main(String[] args) {
-		new ConsoleViewer(this, 20, 20, 1);
+		new ConsoleViewer(this);
 	}
 	
 	public void exceptions(String msg) {

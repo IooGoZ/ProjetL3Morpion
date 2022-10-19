@@ -1,7 +1,11 @@
 package fr.NVT.TopOneReacher.modules.ressources;
 
+
+//Utils for TopTwoReacher
 public enum OptimumZone {
 
+	
+	//Presets values
 	ONE(10000, 5000, (byte) 5, (byte) 15),
 	TWO(10050, 5050, (byte) 4, (byte) 23),
 	THREE(1000, 500, (byte) 5, (byte) 7),

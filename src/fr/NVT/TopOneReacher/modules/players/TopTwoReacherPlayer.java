@@ -82,7 +82,7 @@ public class TopTwoReacherPlayer extends VPlayer {
 				else rg = (byte) (dp.getRgMin() + (oz.getOptimum() - 1));
 				Position optimum_pos = board.getCheckPosition(dp.getDir(), dp.getPos(), rg);
 				
-				addToHeatMap(dp, 100);
+				addToHeatMap(dp, 75);
 				
 				for (short i = dp.getRgMin(); i <= dp.getRgMax(); i++) {
 					Position pos = board.getCheckPosition(dp.getDir(), dp.getPos(), i);

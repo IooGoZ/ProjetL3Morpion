@@ -1,0 +1,2 @@
+TeachersPlayer --> 0
+TopTwoReacher --> 100

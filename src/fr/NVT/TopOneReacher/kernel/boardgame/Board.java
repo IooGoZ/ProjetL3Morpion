@@ -44,12 +44,11 @@ public class Board {
 	private final Game game;
 	
 	//List / Array store the strokes
-	private final int[][][] board;//The ints are player's id or PAWN_NONE
+	private final short[][][] board;//The ints are player's id or PAWN_NONE
 	private final TwoDimensionsPositionStack playersStrokes;
 	//------------------------------
 	
 	//State of board
-	private int winner;
 	private final int nbPlayer;
 	//--------------
 	private int lastPositionSize;
@@ -70,7 +69,7 @@ public class Board {
 		this.lastPositionSize = (width*height*depth)/nbPlayer + TWO_DIMENSIONS_POSITION_STACK_LENGTH_MARGIN;
 		playersStrokes = new TwoDimensionsPositionStack(nbPlayer, this.lastPositionSize, TWO_DIMENSIONS_POSITION_STACK_SHIFT);
 		
-		this.board = new int[this.width][this.height][this.depth];
+		this.board = new short[this.width][this.height][this.depth];
 		initBoardTab();
 	}
 
@@ -101,10 +100,6 @@ public class Board {
 	public int getDepth() {
 		return depth;
 	}
-
-	public int getWinner() {
-		return this.winner;
-	}
 	
 	public int getPawnAtPosition(Position pos) {
 		if (Position.validatePosition(pos, width, height, depth)) 
@@ -113,7 +108,7 @@ public class Board {
 	}
 
 	private void setPawnAtPosition(Position pos, int id) {
-		this.board[pos.getX()][pos.getY()][pos.getZ()] = id;
+		this.board[pos.getX()][pos.getY()][pos.getZ()] = (short) id;
 	}
 	
 	
@@ -213,6 +208,7 @@ public class Board {
 		}
 	}
 	
+	//Return lasts positions list play (with index)
 	public Position[] getLastPositions(int index) {
 		Position[] poss = new Position[this.nbPlayer];
 		boolean isNull = true;
@@ -224,6 +220,7 @@ public class Board {
 		else return poss;
 	}
 	
+	//Return the size of lasts positions list
 	public int getLastPositionsSize() {
 		return this.lastPositionSize;
 	}
