@@ -28,7 +28,9 @@ public class WebSocketSession implements Runnable {
 	private static final int MASK_SIZE = 4;
 	private static final int SINGLE_FRAME_UNMASKED = 0x81;
 	
-	BufferedOutputStream os;
+	private BufferedOutputStream os;
+	private WebSocketParser parser;
+	
 
 	public WebSocketSession(WebSocketServer server, Socket client) {
 		this.client = client;
@@ -62,6 +64,8 @@ public class WebSocketSession implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		this.parser = new WebSocketParser(server.getwViewer());
 	}
 
 	@Override
@@ -70,6 +74,7 @@ public class WebSocketSession implements Runnable {
 			while (!client.isClosed()) {
 				String response = read();
 				//Parser------------------------------------------------------------
+				parser.mainParser(response);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

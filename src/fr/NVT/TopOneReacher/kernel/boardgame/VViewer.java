@@ -10,7 +10,7 @@ import fr.NVT.TopOneReacher.kernel.utils.Position;
 public abstract class VViewer {
 	
 	//Constants
-	private static final int DEFAULT_CURRENT_GAME_ID = -1;
+	protected static final int DEFAULT_CURRENT_GAME_ID = -1;
 	
 	
 	//Variables
@@ -95,5 +95,9 @@ public abstract class VViewer {
 		if (this.current_game_id >= this.games.size()) return false;
 		this.current_game_id = id;
 		return true;
+	}
+	
+	protected int getCurrentGameId() {
+		return current_game_id ;
 	}
 }
