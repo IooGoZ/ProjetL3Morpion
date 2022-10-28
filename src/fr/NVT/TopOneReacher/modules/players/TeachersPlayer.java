@@ -20,15 +20,7 @@ public class TeachersPlayer extends VPlayer {
 
 	
 	private Position calculateBestPosition(DirectionPosition dp) {
-		short rg_min, rg_max;
-		if (dp.getZone() == 1) {
-			rg_min = -4;
-			rg_max = 0;
-		} else {
-			rg_min = 0;
-			rg_max = 4;
-		}
-		
+		short rg_min = dp.getRgMin(), rg_max = dp.getRgMax();
 		if (dp.getZone() != 1) {
 			for (short i = rg_min; i <= rg_max; i--) {
 				Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
@@ -72,15 +64,7 @@ public class TeachersPlayer extends VPlayer {
 	private void evaluateZonedDirection(DirectionPosition dp) {
 		
 		//Definition de la zone d'analyse
-		short rg_min, rg_max;
-		
-		if (dp.getZone() == 1) {
-			rg_min = -4;
-			rg_max = 0;
-		} else {
-			rg_min = 0;
-			rg_max = 4;
-		}
+		short rg_min = dp.getRgMin(), rg_max = dp.getRgMax();
 		
 		//On récupère le joueur à analyser
 		int id = this.board.getPawnAtPosition(dp.getPos());
