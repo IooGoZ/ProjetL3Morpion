@@ -15,7 +15,7 @@ public class WebSocketServer {
 	private boolean isRunning = true;
 	private List<WebSocketSession> wsSessions = new ArrayList<>();
 	
-	private  WebSocketServer wsServer;
+	private final WebSocketServer wsServer;
 	private final WebViewer wViewer;
 	
 	
@@ -29,6 +29,7 @@ public class WebSocketServer {
 		}
 		
 		this.wViewer = webViewer;
+		this.wsServer = this;
 	}
 
 	public void open() {

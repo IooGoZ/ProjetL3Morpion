@@ -3,11 +3,13 @@ package fr.NVT.TopOneReacher.modules.viewers;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.Main;
 import fr.NVT.TopOneReacher.kernel.boardgame.Board;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
+import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketParser;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketServer;
 
@@ -27,7 +29,12 @@ public class WebViewer extends VViewer {
 	//Parse Call----------------
 	
 	public int createNewGame(int width, int height, int depth) {
-		return super.createNewGame(width, height, depth);
+		int id = super.createNewGame(width, height, depth);
+		Game game = super.getGame(id);
+		new TopTwoReacherPlayer(game, "TopTwoReacher One");
+		new TopTwoReacherPlayer(game, "TopTwoReacher Two");
+		System.out.println("Game is create !");
+		return id;
 	}
 
 	public void setDelay(double delay) {
@@ -39,6 +46,7 @@ public class WebViewer extends VViewer {
 	public void runGame() {
 		if (checkCurrentGame())
 			super.runGame(super.getCurrentGameId());
+			System.out.println("Game is run !");
 	}
 	
 	

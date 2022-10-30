@@ -17,7 +17,7 @@ public class Game extends Thread {
 	
 	private static final int LIMIT_PLAYER_TRY = 3;
 	
-	private static final boolean ENABLE_DISPLAY = false;
+	private static final boolean ENABLE_DISPLAY = true;
 	
 	
 	//Players list

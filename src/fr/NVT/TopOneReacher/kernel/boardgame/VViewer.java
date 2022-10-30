@@ -66,6 +66,7 @@ public abstract class VViewer {
 	protected int createNewGame(int width, int height, int depth) {
 		int id = this.games.size();
 		this.games.add(id, new Game(this, id, width, height, depth));
+		this.current_game_id = id;
 		return id;
 	}
 	

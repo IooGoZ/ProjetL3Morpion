@@ -37,19 +37,19 @@ public class WebSocketParser {
 
 	        switch (id)
 	        {
-	            case '0' : 
+	            case 0 : 
 	            	parserCreateNewGame(msg);
 	                break;
-	            case '1' : 
+	            case 1 : 
 	            	parserSetDelay(msg);
 	                break;
-	            case '2' : 
+	            case 2 : 
 	            	parserRunGame();
 	                break;
-	            case '3' : 
+	            case 3 : 
 	            	parserPauseResume();
 	                break;
-	            case '4' : 
+	            case 4 : 
 	            	parserDisplayAction(msg);
 	                break;
 	            default :
