@@ -111,18 +111,20 @@ public class WebSocketParser {
 		String[] msgs = msg.split(SPLIT_CHAR);
 		// On verifie si le message a la bonne taille
 		int length = msgs.length;
-		if (length != 3)
+		if (length != 4)
 		{
-			System.out.println("ERROR in parserDisplayAction : msgs.length is not equal to 3, it is egal to " + length);
+			System.out.println("ERROR in parserDisplayAction : msgs.length is not equal to 4, it is egal to " + length);
 			return;
 		}
 		else
 		{
 			// On recupere les valeurs
-			int x = Integer.parseInt(msgs[0]);
-			int y = Integer.parseInt(msgs[1]);
-			int z = Integer.parseInt(msgs[2]);
-				        
+			int id = Integer.parseInt(msgs[0]);
+			
+			int x = Integer.parseInt(msgs[1]);
+			int y = Integer.parseInt(msgs[2]);
+			int z = Integer.parseInt(msgs[3]);
+						
 			// On appelle la fonction avec les valeurs recuperes
 			//displayAction(x, y, z);                 A FINIR
 		}
@@ -168,15 +170,19 @@ public class WebSocketParser {
 	}
 	
 	//Parse toutes les positions du plateau
-	public static void unparserShowBoard(WebSocketServer ws_server, Position[] positions)
+	public static void unparserShowBoard(WebSocketServer ws_server, int[] playersId, Position[][] positions)
 	{
 		//On definit l'id
 		int id = 1;
 		
 		//On redige le "message"
 		String msg = null;
-		for (Position pos : positions) {
-			msg = msg + pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ() + SPLIT_CHAR;
+		for (int playerId : playersId)
+		{
+			msg = msg + playerId + SPLIT_CHAR;
+			for (Position pos : positions[playerId]) {
+				msg = msg + pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ() + SPLIT_CHAR;
+			}
 		}
 		
 		//On retire le dernier caractere, le SPLIT_CHAR qui n'est precede de rien
@@ -192,13 +198,13 @@ public class WebSocketParser {
 	}
 	
 	// Parse les dimensions du plateau
-	public static void unparserPlayerPos(WebSocketServer ws_server, Position pos)
+	public static void unparserPlayerPos(WebSocketServer ws_server, int playerId, Position pos)
 	{
 		//On definit l'id
 		int id = 2;
 		
 		//On redige le "message"
-		String msg = pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ();
+		String msg = playerId + SPLIT_CHAR + pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ();
 		
 		// On envoie le timbre (id) et la lettre (msg) a la "poste"
 		try {
