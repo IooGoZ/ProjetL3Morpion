@@ -183,7 +183,9 @@ public class WebSocketParser {
 			for (Position pos : positions[playerId]) {
 				msg = msg + pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ() + SPLIT_CHAR;
 			}
+			msg = msg + '£' + SPLIT_CHAR; // Pour separer 2 joueurs
 		}
+		msg = msg + '%'; // Pour reperer la fin du message
 		
 		//On retire le dernier caractere, le SPLIT_CHAR qui n'est precede de rien
 		msg = msg.substring(0, msg.length()-1); // <----- PAS CERTAIN, A TESTER
