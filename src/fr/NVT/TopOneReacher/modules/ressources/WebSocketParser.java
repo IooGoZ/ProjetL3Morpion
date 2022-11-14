@@ -126,7 +126,7 @@ public class WebSocketParser {
 			int z = Integer.parseInt(msgs[3]);
 						
 			// On appelle la fonction avec les valeurs recuperes
-			//displayAction(x, y, z);                 A FINIR
+			wViewer.setPlayerPosition(id, new Position(x, y, z));
 		}
 	}
 	
@@ -181,7 +181,7 @@ public class WebSocketParser {
 		{
 			msg = msg + playerId + SPLIT_CHAR;
 			for (Position pos : positions[playerId]) {
-				msg = msg + pos.getX() + SPLIT_CHAR + pos.getY() + SPLIT_CHAR + pos.getZ() + SPLIT_CHAR;
+				msg = msg + pos.getX() + SPLIT_CHAR +  pos.getY() + SPLIT_CHAR + pos.getZ() + SPLIT_CHAR;
 			}
 			msg = msg + '£' + SPLIT_CHAR; // Pour separer 2 joueurs
 		}

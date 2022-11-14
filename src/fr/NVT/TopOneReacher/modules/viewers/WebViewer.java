@@ -1,6 +1,7 @@
 package fr.NVT.TopOneReacher.modules.viewers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.NVT.TopOneReacher.kernel.Game;
@@ -9,6 +10,8 @@ import fr.NVT.TopOneReacher.kernel.boardgame.Board;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
+import fr.NVT.TopOneReacher.modules.players.HumanWebPlayer;
+import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
 import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketParser;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketServer;
@@ -18,6 +21,9 @@ public class WebViewer extends VViewer {
 	private WebSocketServer ws_server; 
 	
 	int last_width, last_height, last_depth;
+	
+	private HashMap<Integer, Position> player2lstpos = new HashMap<>();
+	private HashMap<Integer, Position> player2pos = new HashMap<>();
 	
 	public WebViewer(Main main) {
 		super(main);
@@ -31,8 +37,10 @@ public class WebViewer extends VViewer {
 	public int createNewGame(int width, int height, int depth) {
 		int id = super.createNewGame(width, height, depth);
 		Game game = super.getGame(id);
+		
+		new HumanWebPlayer(this, game, "HumanWebPlayer Two");
 		new TopTwoReacherPlayer(game, "TopTwoReacher One");
-		new TopTwoReacherPlayer(game, "TopTwoReacher Two");
+		
 		System.out.println("Game is create !");
 		return id;
 	}
@@ -82,12 +90,12 @@ public class WebViewer extends VViewer {
 				}
 			}
 		}
-		WebSocketParser.unparserShowBoard(ws_server, (Position[]) positions.toArray());
+		//WebSocketParser.unparserShowBoard(ws_server, (Position[]) positions.toArray());
 	}
 
 	@Override
 	public void showPlayerPosition(VPlayer player, Position pos) {
-		
+		WebSocketParser.unparserPlayerPos(ws_server, player.getId(), pos);
 	}
 
 	@Override
@@ -108,5 +116,22 @@ public class WebViewer extends VViewer {
 
 	private boolean checkCurrentGame() {
 		return super.getCurrentGameId() != VViewer.DEFAULT_CURRENT_GAME_ID;
+	}
+
+	public void setPlayerPosition(int playerId, Position pos) {
+		player2pos.replace(playerId, pos);
+	}
+
+	public Position getPlayerPosition(HumanWebPlayer humanWebPlayer, Board board) {
+		System.out.println(humanWebPlayer.getId());
+		Position res;
+		do {
+			//exceptions("Joues");
+			Position lstpos = player2lstpos.getOrDefault(humanWebPlayer.getId(), null);
+			res = player2pos.get(humanWebPlayer.getId());
+			while(res==null || lstpos.equals(res));
+			player2lstpos.replace(humanWebPlayer.getId(), res);
+		} while(board.getPawnAtPosition(res) != Board.PAWN_NONE);
+		return null;
 	}
 }

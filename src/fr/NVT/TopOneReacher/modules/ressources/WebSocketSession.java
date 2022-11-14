@@ -76,6 +76,7 @@ public class WebSocketSession implements Runnable {
 				//Parser------------------------------------------------------------
 				parser.mainParser(response);
 			}
+			System.out.println("Client in is close");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
