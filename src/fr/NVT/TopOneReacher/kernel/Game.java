@@ -9,7 +9,7 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
 
-public class Game extends Thread {
+public class Game implements Runnable {
 	
 	//Constants
 	private static final double DEFAULT_DELAY = -1.0d;
@@ -50,7 +50,6 @@ public class Game extends Thread {
 	//Run the game
 	@Override
 	public void run() {
-		super.run();
 		
 		//Initialization of play board
 		this.board = new Board(this, this.width, this.height, this.depth, players.size());

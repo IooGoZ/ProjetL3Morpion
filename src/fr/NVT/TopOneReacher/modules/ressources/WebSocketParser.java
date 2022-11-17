@@ -126,7 +126,7 @@ public class WebSocketParser {
 			int z = Integer.parseInt(msgs[3]);
 						
 			// On appelle la fonction avec les valeurs recuperes
-			wViewer.setPlayerPosition(id, new Position(x, y, z));
+			wViewer.playPosition(id, new Position(x, y, z));
 		}
 	}
 	

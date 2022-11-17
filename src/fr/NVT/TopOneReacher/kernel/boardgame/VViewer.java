@@ -82,7 +82,8 @@ public abstract class VViewer {
 	
 		//Run specific game
 	protected void runGame(int id) {
-		this.games.get(id).run();
+		Thread t = new Thread(this.games.get(id));
+		t.start();
 
 	}
 	

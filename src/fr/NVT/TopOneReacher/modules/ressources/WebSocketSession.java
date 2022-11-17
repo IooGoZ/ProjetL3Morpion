@@ -65,20 +65,24 @@ public class WebSocketSession implements Runnable {
 			e.printStackTrace();
 		}
 		
-		this.parser = new WebSocketParser(server.getwViewer());
+		this.parser = server.getwViewer().getParser();
 	}
 
 	@Override
 	public void run() {
 		try {
 			while (!client.isClosed()) {
+				System.out.println("Try to read...");
 				String response = read();
+				System.out.println("Readed...");
 				//Parser------------------------------------------------------------
-				parser.mainParser(response);
+				if (response != null) 
+					this.parser.mainParser(response);
+				else break;
+				System.out.println("Executed...");
 			}
 			System.out.println("Client in is close");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -106,7 +110,7 @@ public class WebSocketSession implements Runnable {
 			System.out.println("Client closed!");
 			client.close();
 			server.removeSession(this);
-			return "{CLOSESESSION}";
+			return null;
 		} else {
 			final int payloadSize = getSizeOfPayload(buf[1]);
 			buf = readBytes(MASK_SIZE + payloadSize);

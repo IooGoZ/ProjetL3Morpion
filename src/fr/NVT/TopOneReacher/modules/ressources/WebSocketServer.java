@@ -8,10 +8,9 @@ import java.util.List;
 
 import fr.NVT.TopOneReacher.modules.viewers.WebViewer; 
 
-public class WebSocketServer {
+public class WebSocketServer extends ServerSocket {
 
-	private static final int port = 80;
-	private ServerSocket server;
+	private static final int PORT = 80;
 	private boolean isRunning = true;
 	private List<WebSocketSession> wsSessions = new ArrayList<>();
 	
@@ -19,14 +18,9 @@ public class WebSocketServer {
 	private final WebViewer wViewer;
 	
 	
-	public WebSocketServer(WebViewer webViewer) {
-		try {
-			server = new ServerSocket(port);
-			System.out.println("Démarrage du serveur sur 127.0.0.1:" + port);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public WebSocketServer(WebViewer webViewer) throws IOException {
+		super(PORT);
+		System.out.println("Démarrage du serveur sur 127.0.0.1:" + PORT);
 		
 		this.wViewer = webViewer;
 		this.wsServer = this;
@@ -38,7 +32,7 @@ public class WebSocketServer {
 			public void run() {
 				while (isRunning == true) {
 					try {
-						Socket client = server.accept();
+						Socket client = accept();
 						System.out.println("Connexion cliente re�ue.");
 						WebSocketSession wsSession = new WebSocketSession(wsServer, client);
 						Thread t = new Thread(wsSession);
@@ -48,12 +42,7 @@ public class WebSocketServer {
 						e.printStackTrace();
 					}
 				}
-				try {
-					server.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					server = null;
-				}
+				close();
 			}
 		});
 		t.start();
@@ -66,7 +55,7 @@ public class WebSocketServer {
 	public void close() {
 		isRunning = false;
 		try {
-			server.close();
+			super.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,9 +63,21 @@ public class WebSocketServer {
 	}
 	
 	public void sendToAll(String str) throws IOException {
-		for (WebSocketSession wsSession : wsSessions) {
-			wsSession.send(str);
-		}
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				for (WebSocketSession wsSession : wsSessions) {
+					try {
+						wsSession.send(str);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		t.start();
+		
 	}
 
 	public WebViewer getwViewer() {
