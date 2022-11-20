@@ -78,8 +78,8 @@ public class TopTwoReacherPlayer extends VPlayer {
 			notes.put(dp, oz);
 			if (id == super.getId()) {
 				short rg;
-				if (reversable) rg = (byte) (dp.getRgMax() - (oz.getOptimum() - 1));
-				else rg = (byte) (dp.getRgMin() + (oz.getOptimum() - 1));
+				if (reversable) rg = (byte) (dp.getRgMax() - (oz.getOptimumAttack() - 1));
+				else rg = (byte) (dp.getRgMin() + (oz.getOptimumAttack() - 1));
 				Position optimum_pos = board.getCheckPosition(dp.getDir(), dp.getPos(), rg);
 				
 				addToHeatMap(dp, 75);
@@ -139,14 +139,21 @@ public class TopTwoReacherPlayer extends VPlayer {
 		}
 		
 		if (notes.size() != 0) {
+			int id = board.getPawnAtPosition(max_dp.getPos());
 			if (max_note > 450) {
 				//On calcule la position optimum
 				OptimumZone oz = notes.get(max_dp);
 				byte dp_byte = dpToByte(max_dp);
 				boolean reversable = oz.getReversableValue() == dp_byte;
 				byte rg;
-				if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimum() - 1));
-				else rg = (byte) (max_dp.getRgMin() + (oz.getOptimum() - 1));
+				if (id == super.getId()) {
+					if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimumAttack() - 1));
+					else rg = (byte) (max_dp.getRgMin() + (oz.getOptimumAttack() - 1));
+				} else {
+					if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimumDefense() - 1));
+					else rg = (byte) (max_dp.getRgMin() + (oz.getOptimumDefense() - 1));
+				}
+				
 				
 				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
 			} else if (heatMap.size() != 0) {
@@ -166,8 +173,13 @@ public class TopTwoReacherPlayer extends VPlayer {
 				byte dp_byte = dpToByte(max_dp);
 				boolean reversable = oz.getReversableValue() == dp_byte;
 				byte rg;
-				if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimum() - 1));
-				else rg = (byte) (max_dp.getRgMin() + (oz.getOptimum() - 1));
+				if (id == super.getId()) {
+					if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimumAttack() - 1));
+					else rg = (byte) (max_dp.getRgMin() + (oz.getOptimumAttack() - 1));
+				} else {
+					if (reversable) rg = (byte) (max_dp.getRgMax() - (oz.getOptimumDefense() - 1));
+					else rg = (byte) (max_dp.getRgMin() + (oz.getOptimumDefense() - 1));
+				}
 				
 				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
 				

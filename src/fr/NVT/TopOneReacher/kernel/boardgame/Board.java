@@ -149,7 +149,7 @@ public class Board {
 			}
 		}
 		
-		if (none_size == 0) {
+		if (none_size <= 0) {
 			this.game.setWinner(null, pos);
 			return true;
 		}

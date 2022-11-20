@@ -273,6 +273,21 @@ public class WebSocketParser {
 		}
 	}
 	
+	public static void unparserRequestHuman(WebSocketServer ws_server, int human_id)
+	{
+		//On definit l'id
+		int id = 6;
+		
+		String msg = "" + human_id;
+		// On envoie au parseMaker
+		try {
+			parseMake(ws_server, id, msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 
 

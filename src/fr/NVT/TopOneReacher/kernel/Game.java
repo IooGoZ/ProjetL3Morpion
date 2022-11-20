@@ -154,12 +154,17 @@ public class Game implements Runnable {
 
 	//Define the winner and make end to the game
 	public void setWinner(VPlayer player, Position pos) {
-		this.winner = player.getId();
-		this.state = GameState.FINISHED;
-		if (ENABLE_DISPLAY) {
-			this.viewer.showPlayerPosition(player, pos);
-			this.viewer.showWinner(player);
+		if (player != null) {
+			this.winner = player.getId();
+			this.state = GameState.FINISHED;
+			if (ENABLE_DISPLAY) {
+				this.viewer.showPlayerPosition(player, pos);
+				this.viewer.showWinner(player);
+			}
+		} else if (ENABLE_DISPLAY) {
+			this.viewer.showWinner(null);
 		}
+		
 	}
 	
 	public List<VPlayer> getPlayersList() {

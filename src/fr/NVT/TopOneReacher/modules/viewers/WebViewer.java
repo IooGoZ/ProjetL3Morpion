@@ -41,9 +41,15 @@ public class WebViewer extends VViewer {
 		int id = super.createNewGame(width, height, depth);
 		Game game = super.getGame(id);
 		
-		new HumanWebPlayer(game, "HumanWebPlayer Two");
+		new HumanWebPlayer(this, game, "HumanPlayer One");
 		new TopTwoReacherPlayer(game, "TopTwoReacher One");
-		//new TeachersPlayer(game, "TeachersPlayer Two");
+		
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Two");
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Three");
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Four");
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Five");
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Six");
+//		new TopTwoReacherPlayer(game, "TopTwoReacher Seven");
 		
 		System.out.println("Game is create !");
 		return id;
@@ -104,7 +110,9 @@ public class WebViewer extends VViewer {
 
 	@Override
 	public void showWinner(VPlayer player) {
-		WebSocketParser.unparserShowWinner(ws_server, player.getName());
+		if (player != null)
+			WebSocketParser.unparserShowWinner(ws_server, player.getName());
+		else WebSocketParser.unparserShowWinner(ws_server, "Nobody");
 	}
 
 	@Override
@@ -140,5 +148,11 @@ public class WebViewer extends VViewer {
 	
 	public WebSocketParser getParser() {
 		return ws_parser;
+	}
+
+
+	public void requestHuman(int id) {
+		WebSocketParser.unparserRequestHuman(ws_server, id);
+		
 	}
 }
