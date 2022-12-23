@@ -1,2 +1,2 @@
-TeachersPlayer --> 0
-TopTwoReacher --> 100
+ReverseTopTwoReacherPlayer One --> 0
+TopTwoReacherPlayer Two --> 1000

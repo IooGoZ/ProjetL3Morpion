@@ -1,5 +1,6 @@
 package fr.NVT.TopOneReacher.kernel;
 
+import fr.NVT.TopOneReacher.modules.viewers.ConsoleViewer;
 import fr.NVT.TopOneReacher.modules.viewers.WebViewer;
 
 public class Main {
@@ -9,8 +10,8 @@ public class Main {
 	}
 	
 	private Main(String[] args) {
-		//new ConsoleViewer(this);
-		new WebViewer(this);
+		new ConsoleViewer(this);
+		//new WebViewer(this);
 	}
 	
 	public void exceptions(String msg) {

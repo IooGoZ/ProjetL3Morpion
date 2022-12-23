@@ -10,9 +10,12 @@ import fr.NVT.TopOneReacher.kernel.boardgame.Board;
 import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
+import fr.NVT.TopOneReacher.modules.players.ChatGPTInterfacePlayer;
 import fr.NVT.TopOneReacher.modules.players.HumanWebPlayer;
+import fr.NVT.TopOneReacher.modules.players.RandomPlayer;
+import fr.NVT.TopOneReacher.modules.players.ReverseTTRPlayer;
 import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
-import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
+import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketParser;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketServer;
 
@@ -41,8 +44,9 @@ public class WebViewer extends VViewer {
 		int id = super.createNewGame(width, height, depth);
 		Game game = super.getGame(id);
 		
-		new HumanWebPlayer(this, game, "HumanPlayer One");
-		new TopTwoReacherPlayer(game, "TopTwoReacher One");
+		new ReverseTTRPlayer(game, "ReverseTopTwoReacherPlayer");
+		new TTRPlayer(game, "TopTwoReacherPlayer");
+		
 		
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Two");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Three");

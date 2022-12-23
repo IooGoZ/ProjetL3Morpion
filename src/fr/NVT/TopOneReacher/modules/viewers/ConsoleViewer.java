@@ -1,7 +1,10 @@
 package fr.NVT.TopOneReacher.modules.viewers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import fr.NVT.TopOneReacher.kernel.Game;
 import fr.NVT.TopOneReacher.kernel.Main;
@@ -10,19 +13,20 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
+import fr.NVT.TopOneReacher.modules.players.ReverseTTRPlayer;
+import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
 import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
-import fr.NVT.TopOneReacher.modules.players.TopTwoReacherPlayer;
 
 
 	//ConsoleViewer is basic display system to run tests
 public class ConsoleViewer extends VViewer {
 
 	//Constants
-	private static final int DEFAULT_WIDTH = 50;
-	private static final int DEFAULT_HEIGHT = 50;
+	private static final int DEFAULT_WIDTH = 10;
+	private static final int DEFAULT_HEIGHT = 10;
 	private static final int DEFAULT_DEPTH = 1;
 	
-	private static final int NB_OF_GAMES = 100;
+	private static final int NB_OF_GAMES = 1000;
 	
 	private static final String OUT_FILE_NAME = "morpion_out.txt";
 	
@@ -31,21 +35,45 @@ public class ConsoleViewer extends VViewer {
 	
 	private int[][][] fake_board;
 	
+	private PrintStream x_train;
+	private PrintStream y_train;
+	
 	
 	//Constructors
 	public ConsoleViewer(Main main, int width, int height, int depth) {
 		super(main);
+		
+		this.width = width;
+		this.height = height;
+		this.depth = depth;
+		
+		/*try {
+			this.x_train = new PrintStream(new File("x_train.txt"));
+			this.y_train = new PrintStream(new File("y_train.txt"));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}*/
+		
+		this.x_train = System.out;
+		this.y_train = null;
+		
 		
 		//Store players stats
 		int pl2winners[] = null;
 		String pl2names[] = null;
 		int nb_players = -1;
 		
+		
+		
 		//Loop to create games
 		for (int game_index = 0; game_index < NB_OF_GAMES; game_index++) {
+			System.out.println(String.format("%10d", game_index) + " / " + NB_OF_GAMES);
 			//Create game
 			int game_id =  super.createNewGame(width, height, depth);
 			Game game = super.getGame(game_id);
+			
+			resetScreen();
 			
 			//Init players
 			initPlayers(game);
@@ -74,7 +102,7 @@ public class ConsoleViewer extends VViewer {
 		}
 		
 		//Prepare the display 
-		String res = "";		
+		String res = "";
 		for (int i = 0; i < nb_players; i++) {
 			res += pl2names[i] + " --> " + pl2winners[i] + "\n";
 		}
@@ -101,8 +129,8 @@ public class ConsoleViewer extends VViewer {
 	
 	//Init players for each game
 	public void initPlayers(Game game) {
-		new TeachersPlayer(game, "TeachersPlayer");
-		new TopTwoReacherPlayer(game, "TopTwoReacher");
+		new ReverseTTRPlayer(game, "ReverseTopTwoReacherPlayer One");
+		new TTRPlayer(game, "TopTwoReacherPlayer Two");
 	}
 
 	@Override
@@ -114,92 +142,114 @@ public class ConsoleViewer extends VViewer {
 
 	@Override
 	public void resetScreen() {
-		//no action
-		return;
+		this.fake_board = new int[this.width][this.height][this.depth];
+		for (int z = 0; z < this.depth; z++) {
+			for (int y = 0; y < this.height; y++) {
+				for (int x = 0; x < this.width; x++) {
+					this.fake_board[x][y][z] = -1;
+				}
+			}
+		}
 	}
 
 	@Override
 	public void shownBoard(Board board) {
-		fake_board = new int[this.width][this.height][this.depth];
+		this.fake_board = new int[this.width][this.height][this.depth];
 		for (int z = 0; z < this.depth; z++) {
 			for (int y = 0; y < this.height; y++) {
 				for (int x = 0; x < this.width; x++) {
-					fake_board[x][y][z] = board.getPawnAtPosition(new Position(x, y, z));
+					this.fake_board[x][y][z] = board.getPawnAtPosition(new Position(x, y, z));
 				}
 			}
 		}
-		print();
+		//print(this.x_train);
 	}
 
 	@Override
-	public void showPlayerPosition(VPlayer player, Position pos) {
+	public synchronized void showPlayerPosition(VPlayer player, Position pos) {
 		if (player == null) return;
-		fake_board[pos.getX()][pos.getY()][pos.getZ()] = player.getId();
-		print();
+		if (player.getId() == 2) {
+			//print(this.x_train);
+			//this.y_train.println(',');
+			//this.y_train.print("[" + pos.getX() + ", " + pos.getY() + "]");
+		}
+		this.fake_board[pos.getX()][pos.getY()][pos.getZ()] = player.getId();
+		return;
 	}
 
 	@Override
-	public void showWinner(VPlayer player) {
+	public synchronized void showWinner(VPlayer player) {
 		if (player == null) System.out.println("La partie est nulle !");
 		else System.out.println(player.getName() + " a gagné la partie !");
 	}
 
 	@Override
-	public void showPauseResume(boolean pr) {
+	public synchronized void showPauseResume(boolean pr) {
 		System.out.print("Pause : " + pr);
 	}
 
 	@Override
-	public void exceptions(String message) {
+	public synchronized void exceptions(String message) {
 		System.err.println(message);
 		
 	}
 	
 	//Print full board in console (up to 8 players)
-	private void print() {
+	private void print(PrintStream out) {
+		
 		for (int z = 0; z < this.depth; z++) {
-			System.out.println("z = " + z + "--------------");
+			out.println(',');
+			out.print("[");
+			boolean first_y = true;
 			for (int y = 0; y < this.height; y++) {
-				if (y < 10 ) System.out.print("y = 0" + y + "----");
-				else System.out.print("y = " + y + "----");
+				if (first_y)
+					first_y = false;
+				else out.println(',');
+				out.print('[');
+				boolean first_x = true;
 				for (int x = 0; x < this.width; x++) {
+					if (first_x)
+						first_x = false;
+					else out.print(',');
 					int i = this.fake_board[x][y][z];
 					char c;
 					switch (i) {
 					case 1: {
-						c = 'X'; break;
+						c = '1'; break;
 					}
 					case 2: {
-						c = '0'; break;
+						c = '2'; break;
 					}
 					case 3: {
-						c = '$'; break;
+						c = '3'; break;
 					}
 					case 4: {
-						c = '#'; break;
+						c = '4'; break;
 					}
 					case 5: {
-						c = ':'; break;
+						c = '5'; break;
 					}
 					case 6: {
-						c = '!'; break;
+						c = '6'; break;
 					}
 					case 7: {
-						c = '?'; break;
+						c = '7'; break;
 					}
 					case 8: {
-						c = '&'; break;
+						c = '8'; break;
 					}
 					default:
-						c = ' ';
+						c = '0';
+						
 					}
 					
-					System.out.print("|" + c);
+					out.print(" " + c);
 				}
-				System.out.println("|");
+				out.print("]");
 			}
-			System.out.println("-------------------");
+			out.print("]");
 		}
+		out.println();
 	}
 	
 	
