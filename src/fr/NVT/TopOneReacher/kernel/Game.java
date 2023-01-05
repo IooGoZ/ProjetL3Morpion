@@ -161,8 +161,10 @@ public class Game implements Runnable {
 				this.viewer.showPlayerPosition(player, pos);
 				this.viewer.showWinner(player);
 			}
-		} else if (ENABLE_DISPLAY) {
-			this.viewer.showWinner(null);
+		} else {
+			this.winner = 0;
+			this.state = GameState.FINISHED;
+			if (ENABLE_DISPLAY) this.viewer.showWinner(null);
 		}
 		
 	}
@@ -174,6 +176,9 @@ public class Game implements Runnable {
 	//Return the winner (null if undefined)
 	public int getWinner() {
 		return this.winner;
+	}
+	public boolean is3D() {
+		return this.depth != 1;
 	}
 	
 }

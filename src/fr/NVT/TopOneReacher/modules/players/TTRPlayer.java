@@ -29,21 +29,6 @@ public class TTRPlayer extends VPlayer {
 		} else heatMap.put(dp, val);
 	}
 	
-	private byte dpToByte(DirectionPosition dp) {
-		//Definition de la zone d'analyse
-		short rg_min = dp.getRgMin(), rg_max = dp.getRgMax();
-		String bin = "";
-		int id = this.board.getPawnAtPosition(dp.getPos());
-		for (short i = rg_min; i <= rg_max; i++) {
-			Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
-			int pawn = this.board.getPawnAtPosition(check_pos);
-			if (pawn != Board.PAWN_NONE && pawn != id) return -1;
-			else if (pawn == id) bin += "1";
-			else bin += "0";
-		}
-		return Byte.parseByte(bin, 2);
-	}
-	
 	private void evalutatePosition(Position pos) {
 		
 		//Si la position est null, sa note n'existe pas
@@ -68,8 +53,8 @@ public class TTRPlayer extends VPlayer {
 	//Evaluation d'une zone
 	private void evaluateDP(DirectionPosition dp) {
 		int id = board.getPawnAtPosition(dp.getPos());
-		if (PlayerUtils.zoneIsOpen(board, id, dp.getPos(), dp.getDir(), dp.getRgMin(), dp.getRgMax())) {
-			byte dp_byte = dpToByte(dp);
+		if (PlayerUtils.zoneIsOpen(board, id, dp)) {
+			byte dp_byte = PlayerUtils.dpToByte(board, dp);
 			if (dp_byte == -1) return;
 			OptimumZone oz = OptimumZone.getOptimumZone(dp_byte);
 			boolean reversable = oz.getReversableValue() == dp_byte;
@@ -78,12 +63,12 @@ public class TTRPlayer extends VPlayer {
 				short rg;
 				if (reversable) rg = (byte) (dp.getRgMax() - (oz.getOptimumAttack() - 1));
 				else rg = (byte) (dp.getRgMin() + (oz.getOptimumAttack() - 1));
-				Position optimum_pos = board.getCheckPosition(dp.getDir(), dp.getPos(), rg);
+				Position optimum_pos = Board.getCheckPosition(dp.getDir(), dp.getPos(), rg);
 				
 				addToHeatMap(dp, 75);
 				
 				for (short i = dp.getRgMin(); i <= dp.getRgMax(); i++) {
-					Position pos = board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+					Position pos = Board.getCheckPosition(dp.getDir(), dp.getPos(), i);
 					if (pos != optimum_pos && board.getPawnAtPosition(pos) == Board.PAWN_NONE)
 						addToHeatMap(dp, oz.getCurrentPrioritie());
 				}
@@ -103,7 +88,7 @@ public class TTRPlayer extends VPlayer {
 		
 		//Si la liste est vide (=1er tour) -> position random
 		if (positions == null)
-			return getRandomPosition();
+			return PlayerUtils.getRandomPosition(board);
 		
 		//On évalue toutes les positions jouées
 		for (int j = 1; j <= this.board.getLastPositionsSize(); j ++) {
@@ -141,7 +126,7 @@ public class TTRPlayer extends VPlayer {
 			if (max_note > 450) {
 				//On calcule la position optimum
 				OptimumZone oz = notes.get(max_dp);
-				byte dp_byte = dpToByte(max_dp);
+				byte dp_byte = PlayerUtils.dpToByte(board, max_dp);
 				boolean reversable = oz.getReversableValue() == dp_byte;
 				byte rg;
 				if (id == super.getId()) {
@@ -153,7 +138,7 @@ public class TTRPlayer extends VPlayer {
 				}
 				
 				
-				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
+				return Board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
 			} else if (heatMap.size() != 0) {
 				max_dp = null;
 				max_note = -1;
@@ -168,7 +153,7 @@ public class TTRPlayer extends VPlayer {
 				
 				//On calcule la position optimum
 				OptimumZone oz = notes.get(max_dp);
-				byte dp_byte = dpToByte(max_dp);
+				byte dp_byte = PlayerUtils.dpToByte(board, max_dp);
 				boolean reversable = oz.getReversableValue() == dp_byte;
 				byte rg;
 				if (id == super.getId()) {
@@ -179,23 +164,10 @@ public class TTRPlayer extends VPlayer {
 					else rg = (byte) (max_dp.getRgMin() + (oz.getOptimumDefense() - 1));
 				}
 				
-				return board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
+				return Board.getCheckPosition(max_dp.getDir(), max_dp.getPos(), rg);
 				
 			}
 		}
-		return getRandomPosition();
-	}
-
-	//Retourne une position random inoccuppée 
-	private Position getRandomPosition() {
-		int x, y, z;
-		Position pos;
-		do {
-			x = PlayerUtils.randomInt(0, board.getWidth());
-			y = PlayerUtils.randomInt(0, board.getHeight());
-			z = PlayerUtils.randomInt(0, board.getDepth());
-			pos = new Position(x, y, z);
-		} while(this.board.getPawnAtPosition(pos)!=Board.PAWN_NONE);
-		return new Position(x, y, z);
+		return PlayerUtils.getRandomPosition(board);
 	}
 }

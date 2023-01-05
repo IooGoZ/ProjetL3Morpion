@@ -19,7 +19,7 @@ public class TestPlayer extends VPlayer{
 	public Position loop(Board board) {
 		if (rg > 4) System.exit(0);
 		rg++;
-		return board.getCheckPosition((byte) 4, pos, (short) rg);
+		return Board.getCheckPosition((byte) 4, pos, (short) rg);
 	}
 
 	

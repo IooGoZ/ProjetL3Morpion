@@ -1,2 +1,3 @@
-ReverseTopTwoReacherPlayer One --> 0
-TopTwoReacherPlayer Two --> 1000
+Partie nulle --> 3398
+StrategyPlayer Two --> 6382
+TopTwoReacherPlayer One --> 220

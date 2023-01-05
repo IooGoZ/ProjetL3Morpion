@@ -23,13 +23,13 @@ public class TeachersPlayer extends VPlayer {
 		short rg_min = dp.getRgMin(), rg_max = dp.getRgMax();
 		if (dp.getZone() != 1) {
 			for (short i = rg_min; i <= rg_max; i--) {
-				Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+				Position check_pos = Board.getCheckPosition(dp.getDir(), dp.getPos(), i);
 				int pawn = this.board.getPawnAtPosition(check_pos);
 				if (pawn == Board.PAWN_NONE) return check_pos;
 			}
 		} else {
 			for (short i = rg_max; i >= rg_min; i++) {
-				Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+				Position check_pos = Board.getCheckPosition(dp.getDir(), dp.getPos(), i);
 				int pawn = this.board.getPawnAtPosition(check_pos);
 				if (pawn == Board.PAWN_NONE) return check_pos;
 			}
@@ -80,7 +80,7 @@ public class TeachersPlayer extends VPlayer {
 		int ennemies_val = 0;
 		
 		for (short i = rg_min; i <= rg_max; i++) {
-			Position check_pos = this.board.getCheckPosition(dp.getDir(), dp.getPos(), i);
+			Position check_pos = Board.getCheckPosition(dp.getDir(), dp.getPos(), i);
 			int pawn = this.board.getPawnAtPosition(check_pos);
 			
 			if (pawn == id) val++;

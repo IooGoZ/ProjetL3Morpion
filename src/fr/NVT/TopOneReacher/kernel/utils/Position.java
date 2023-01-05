@@ -31,4 +31,13 @@ public class Position {
 		else
 			return false;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Position) {
+			Position pos = (Position) obj;
+			return pos.getX() == x && pos.getY() == y && pos.getZ() == z;
+		}
+		return false;
+	}
 }

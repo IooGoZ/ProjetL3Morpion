@@ -25,7 +25,7 @@ public enum OptimumZone {
 	SEVENTEEN(980, 480, (byte) 5, (byte) 5,  (byte) -1),
 	EIGHTEEN(105, 55, (byte) 5, (byte) 3,  (byte) -1),
 	NINETEEN(10, 6, (byte) 5, (byte) 2,  (byte) -1),
-	TWENTY(0, 0, (byte) 1, (byte) 1,  (byte) -1);
+	TWENTY(2, 1, (byte) 1, (byte) 1,  (byte) -1);
 	
 	private final int current_prioritie;
 	private final int ennemie_prioritie;

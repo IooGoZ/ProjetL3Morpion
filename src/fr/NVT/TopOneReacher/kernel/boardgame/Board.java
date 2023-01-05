@@ -129,9 +129,6 @@ public class Board {
 	//Check if player ends the game
 	private boolean checkEnd(Position pos, VPlayer player) {
 		int dir_max = NB_CHECK_2D_AXES;
-		
-		int none_size = 0;
-		
 		if (this.depth != DEPTH_IN_2D) dir_max = NB_CHECK_3D_AXES;
 		
 		for (byte dir = 1; dir <= dir_max; dir++) {
@@ -144,17 +141,26 @@ public class Board {
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
 				for (int z = 0; z < this.depth; z++) {
-					if (this.board[x][y][z] == Board.PAWN_NONE) none_size++;
+					if (this.board[x][y][z] == Board.PAWN_NONE) return false;
 				}
 			}
 		}
 		
-		if (none_size <= 0) {
-			this.game.setWinner(null, pos);
-			return true;
-		}
+		this.game.setWinner(null, null);
+		return true;
 		
-		return false;
+	}
+	
+	public boolean checkEnd() {
+			for (int x = 0; x < this.width; x++) {
+				for (int y = 0; y < this.height; y++) {
+					for (int z = 0; z < this.depth; z++) {
+						if (this.board[x][y][z] == Board.PAWN_NONE) return false;
+					}
+				}
+			}
+			this.game.setWinner(null, null);
+			return true;
 	}
 	
 	//Check pawn alignment in a direction
@@ -173,37 +179,37 @@ public class Board {
 	}
 
 	//Get coordonate in a direction
-	public Position getCheckPosition(byte dir, Position pos, short rg) {
+	public static Position getCheckPosition(byte dir, Position pos, short rg) {
 		switch(dir) {
 		//2D & 3D
-		case 1 :
+		case 1 : //90
 			return new Position(pos.getX()-rg, pos.getY(), pos.getZ());
-		case 2 :
+		case 2 : //90
 			return new Position(pos.getX(), pos.getY()-rg, pos.getZ());
-		case 3 :
+		case 3 : //45
 			return new Position(pos.getX()-rg, pos.getY()-rg, pos.getZ());
-		case 4 :
+		case 4 : //45
 			return new Position(pos.getX()+rg, pos.getY()-rg, pos.getZ());
 		//3D Only
-		case 5 :
+		case 5 : //90
 			return new Position(pos.getX(), pos.getY(), pos.getZ()-rg);
-		case 6 :
+		case 6 : //45
 			return new Position(pos.getX(), pos.getY()+rg, pos.getZ()-rg);
-		case 7 :
+		case 7 : //45
 			return new Position(pos.getX(), pos.getY()-rg, pos.getZ()-rg);
-		case 8 :
+		case 8 : //45
 			return new Position(pos.getX()+rg, pos.getY(), pos.getZ()-rg);
-		case 9 :
+		case 9 : //45
 			return new Position(pos.getX()-rg, pos.getY(), pos.getZ()-rg);
-		case 10 :
+		case 10 : //45*45
 			return new Position(pos.getX()-rg, pos.getY()-rg, pos.getZ()-rg);
-		case 11 :
+		case 11 : //45*45
 			return new Position(pos.getX()-rg, pos.getY()-rg, pos.getZ()+rg);
-		case 12 :
+		case 12 : //45*45
 			return new Position(pos.getX()-rg, pos.getY()+rg, pos.getZ()-rg);
-		case 13 :
+		case 13 : //45*45
 			return new Position(pos.getX()-rg, pos.getY()+rg, pos.getZ()+rg);
-		default :
+		default : //45*45
 			return null;
 		}
 	}

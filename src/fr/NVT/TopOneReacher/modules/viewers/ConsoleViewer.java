@@ -1,7 +1,5 @@
 package fr.NVT.TopOneReacher.modules.viewers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -13,9 +11,8 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
-import fr.NVT.TopOneReacher.modules.players.ReverseTTRPlayer;
+import fr.NVT.TopOneReacher.modules.players.StrategyPlayer;
 import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
-import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
 
 
 	//ConsoleViewer is basic display system to run tests
@@ -26,7 +23,7 @@ public class ConsoleViewer extends VViewer {
 	private static final int DEFAULT_HEIGHT = 10;
 	private static final int DEFAULT_DEPTH = 1;
 	
-	private static final int NB_OF_GAMES = 1000;
+	private static final int NB_OF_GAMES = 10000;
 	
 	private static final String OUT_FILE_NAME = "morpion_out.txt";
 	
@@ -68,7 +65,7 @@ public class ConsoleViewer extends VViewer {
 		
 		//Loop to create games
 		for (int game_index = 0; game_index < NB_OF_GAMES; game_index++) {
-			System.out.println(String.format("%10d", game_index) + " / " + NB_OF_GAMES);
+			System.out.println(String.format("%10d", game_index + 1) + " / " + NB_OF_GAMES);
 			//Create game
 			int game_id =  super.createNewGame(width, height, depth);
 			Game game = super.getGame(game_id);
@@ -81,10 +78,11 @@ public class ConsoleViewer extends VViewer {
 			//Create players stats tab
 			if (pl2winners == null) {
 				nb_players = game.getNbPlayers();
-				pl2winners = new int[nb_players];
-				pl2names = new String[nb_players];
+				pl2winners = new int[nb_players+1];
+				pl2names = new String[nb_players+1];
+				pl2names[0] = "Partie nulle";
 				for (VPlayer pl : game.getPlayersList()) {
-					pl2names[pl.getId()-1] = pl.getName();
+					pl2names[pl.getId()] = pl.getName();
 				}
 			}
 			
@@ -93,9 +91,9 @@ public class ConsoleViewer extends VViewer {
 			
 			//Wait the party end
 			while (game.getGameState() != GameState.FINISHED);
-			
+				
 			//Store winners stats
-			pl2winners[game.getWinner()-1]++;
+			pl2winners[game.getWinner()]++;
 			
 			//Release game memory
 			super.removeGame(game_id);
@@ -103,7 +101,7 @@ public class ConsoleViewer extends VViewer {
 		
 		//Prepare the display 
 		String res = "";
-		for (int i = 0; i < nb_players; i++) {
+		for (int i = 0; i < nb_players+1; i++) {
 			res += pl2names[i] + " --> " + pl2winners[i] + "\n";
 		}
 		
@@ -129,8 +127,8 @@ public class ConsoleViewer extends VViewer {
 	
 	//Init players for each game
 	public void initPlayers(Game game) {
-		new ReverseTTRPlayer(game, "ReverseTopTwoReacherPlayer One");
-		new TTRPlayer(game, "TopTwoReacherPlayer Two");
+		new StrategyPlayer(game, "StrategyPlayer Two");
+		new TTRPlayer(game, "TopTwoReacherPlayer One");
 	}
 
 	@Override
@@ -166,7 +164,7 @@ public class ConsoleViewer extends VViewer {
 	}
 
 	@Override
-	public synchronized void showPlayerPosition(VPlayer player, Position pos) {
+	public void showPlayerPosition(VPlayer player, Position pos) {
 		if (player == null) return;
 		if (player.getId() == 2) {
 			//print(this.x_train);
@@ -178,24 +176,25 @@ public class ConsoleViewer extends VViewer {
 	}
 
 	@Override
-	public synchronized void showWinner(VPlayer player) {
-		if (player == null) System.out.println("La partie est nulle !");
-		else System.out.println(player.getName() + " a gagné la partie !");
+	public void showWinner(VPlayer player) {
+		return;
+		//if (player == null) System.out.println("La partie est nulle !");
+		//else System.out.println(player.getName() + " a gagné la partie !");
 	}
 
 	@Override
-	public synchronized void showPauseResume(boolean pr) {
+	public void showPauseResume(boolean pr) {
 		System.out.print("Pause : " + pr);
 	}
 
 	@Override
-	public synchronized void exceptions(String message) {
+	public void exceptions(String message) {
 		System.err.println(message);
 		
 	}
 	
 	//Print full board in console (up to 8 players)
-	private void print(PrintStream out) {
+	private synchronized void print(PrintStream out) {
 		
 		for (int z = 0; z < this.depth; z++) {
 			out.println(',');
