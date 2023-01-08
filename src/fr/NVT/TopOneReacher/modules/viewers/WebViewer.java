@@ -11,9 +11,7 @@ import fr.NVT.TopOneReacher.kernel.boardgame.VPlayer;
 import fr.NVT.TopOneReacher.kernel.boardgame.VViewer;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.players.HumanWebPlayer;
-import fr.NVT.TopOneReacher.modules.players.RandomPlayer;
 import fr.NVT.TopOneReacher.modules.players.StrategyPlayer;
-import fr.NVT.TopOneReacher.modules.players.TeachersPlayer;
 import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketParser;
 import fr.NVT.TopOneReacher.modules.ressources.WebSocketServer;
@@ -43,9 +41,10 @@ public class WebViewer extends VViewer {
 		int id = super.createNewGame(width, height, depth);
 		Game game = super.getGame(id);
 		
-		new TTRPlayer(game, "TopTwoReacherPlayer One");
 		
-		new StrategyPlayer(game, "StrategyPlayer Two");
+		
+		new StrategyPlayer(game, "StrategyPlayer One");
+		new TTRPlayer(game, "TopTwoReacherPlayer Two");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Three");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Four");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Five");

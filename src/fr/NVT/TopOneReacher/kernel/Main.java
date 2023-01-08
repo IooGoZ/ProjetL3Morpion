@@ -1,6 +1,5 @@
 package fr.NVT.TopOneReacher.kernel;
 
-import fr.NVT.TopOneReacher.modules.viewers.ConsoleViewer;
 import fr.NVT.TopOneReacher.modules.viewers.WebViewer;
 
 public class Main {

@@ -21,7 +21,7 @@ public class ConsoleViewer extends VViewer {
 	//Constants
 	private static final int DEFAULT_WIDTH = 10;
 	private static final int DEFAULT_HEIGHT = 10;
-	private static final int DEFAULT_DEPTH = 1;
+	private static final int DEFAULT_DEPTH = 10;
 	
 	private static final int NB_OF_GAMES = 10000;
 	
@@ -32,8 +32,8 @@ public class ConsoleViewer extends VViewer {
 	
 	private int[][][] fake_board;
 	
-	private PrintStream x_train;
-	private PrintStream y_train;
+	//private PrintStream x_train;
+	//private PrintStream y_train;
 	
 	
 	//Constructors
@@ -52,8 +52,8 @@ public class ConsoleViewer extends VViewer {
 			e1.printStackTrace();
 		}*/
 		
-		this.x_train = System.out;
-		this.y_train = null;
+		//this.x_train = System.out;
+		//this.y_train = null;
 		
 		
 		//Store players stats
@@ -127,8 +127,9 @@ public class ConsoleViewer extends VViewer {
 	
 	//Init players for each game
 	public void initPlayers(Game game) {
+
 		new StrategyPlayer(game, "StrategyPlayer Two");
-		new TTRPlayer(game, "TopTwoReacherPlayer One");
+		new TTRPlayer(game, "TTRPlayer One");
 	}
 
 	@Override

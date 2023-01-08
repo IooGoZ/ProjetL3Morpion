@@ -21,10 +21,24 @@ public class StrategyPlayer extends VPlayer{
 	
 	private boolean is_3D;
 	private Board board;
+	private LinkedHashMap<Integer, Integer> priorities;
+	private HashMap<Integer, int[][]> strategies;
+	private HashMap<Integer, int[][]> ennemies;
 	
 	public StrategyPlayer(Game game, String name) {
 		super(game, name);
 		this.is_3D = game.is3D();
+		
+		
+		if (is_3D) {
+			priorities = Strategies.priorities;
+			strategies = Strategies.strategies;
+			ennemies = Strategies.ennemies;
+		} else {
+			priorities = Strategies.priorities2D;
+			strategies = Strategies.strategies2D;
+			ennemies = Strategies.ennemies2D;
+		}
 	}
 	
 	private void evaluateDP(DirectionPosition dp, HashMap<DirectionPosition, OptimumZone> notes) {
@@ -115,43 +129,49 @@ public class StrategyPlayer extends VPlayer{
 			//On évalue une nouvelle strategie
 			Position[] poss = evaluateStrategies();
 			for (int i = poss.length-1; i >= 0; i--)
-				next_strokes.addFirst(poss[i]);
+				if (board.getPawnAtPosition(poss[i]) == Board.PAWN_NONE)
+					next_strokes.addFirst(poss[i]);
 		}
 		
 		nb_stroke++;
-		Position pos = next_strokes.getFirst();
-		next_strokes.removeFirst();
-		return pos;
+		if (next_strokes.size() != 0) {
+			Position pos = next_strokes.getFirst();
+			next_strokes.removeFirst();
+			return pos;
+		}
+		return PlayerUtils.getRandomPosition(board);
 	}
 	
 	private Position convertRelativePos(Position pos, int[] pt) {
-		return new Position(pos.getX()+pt[0], pos.getY()+pt[1], pos.getZ()+pt[2]);
+		return new Position(pos.getX()-pt[0], pos.getY()-pt[1], pos.getZ()-pt[2]);
 	}
 
-	//Pourra être améliorer en retournant le nb de bon point
-	private boolean evaluateStrategy(int [][] ennemie, int[][] strategy, Position pos) {
+	private int evaluateStrategy(int [][] ennemie, int[][] strategy, Position pos) {
+		int res = 0;
 		for (int[] pt : strategy) {
 			Position tmp_pos = convertRelativePos(pos, pt);
 			int bd = board.getPawnAtPosition(tmp_pos);
-			if (bd != Board.PAWN_NONE || bd != super.getId()); //Si bd == super.getId() alors bon point + 1
-				return false;
+			if (bd == super.getId())
+				res++;
+			else if (bd != Board.PAWN_NONE)
+				return -1;
 		}
 		if (ennemie != null) {
 			for (int[] pt : ennemie) {
 				Position tmp_pos = convertRelativePos(pos, pt);
 				int bd = board.getPawnAtPosition(tmp_pos);
-				if (bd == Board.PAWN_NONE || bd == super.getId() || bd == Board.DEFAULT_OUT_PAWN);
-					return false;
+				if (bd == Board.PAWN_NONE || bd == super.getId() || bd == Board.DEFAULT_OUT_PAWN)
+					return -1;
 			}
 		}	
-		return true;
+		return res * 100 / strategy.length;
 	}
 	
 	
 	private Position[] evaluateStrategies() {
-		LinkedHashMap<Integer, Integer> priorities = Strategies.priorities;
-		HashMap<Integer, int[][]> strategies = Strategies.strategies;
-		HashMap<Integer, int[][]> ennemies = Strategies.ennemies;
+		
+		HashMap<Integer, Integer> saving = new HashMap<>();
+		HashMap<Integer, Position> savingPos = new HashMap<>();
 		
 		for (int i = 0; i < board.getLastPositionsSize(); i++) {
 			Position[] positions = board.getLastPositions(i);
@@ -161,17 +181,33 @@ public class StrategyPlayer extends VPlayer{
 			if (pos == null)
 				continue;
 			for (Integer id : priorities.keySet()) {
-				if (evaluateStrategy(ennemies.get(id), strategies.get(id), pos)) {
-					int[][] strat = strategies.get(id);
-					Position[] res = new Position[strat.length];
-					for (int j = 0; j < strat.length; j++) {
-						res[j] = convertRelativePos(pos, strat[j]);
-					}
-					return res;
+				int note = evaluateStrategy(ennemies.get(id), strategies.get(id), pos);
+				if (note != -1) {
+					saving.put(id, note);
+					savingPos.put(id, pos);
+					break;
 				}
 			}
 		}
 		
+		if (saving.size() > 0) {
+			Integer id = 0;
+			int note = -1;
+			for (Integer curr_id : saving.keySet()) {
+				if (saving.get(curr_id)>note) {
+					id = curr_id;
+					saving.get(curr_id);
+				}
+			}
+			
+			int[][] strat = strategies.get(id);
+			Position[] res = new Position[strat.length];
+			for (int j = 0; j < strat.length; j++) {
+				res[j] = convertRelativePos(savingPos.get(id), strat[j]);
+			}
+			return res;
+		}
+	
 		return new Position[] {PlayerUtils.getRandomPosition(board)};
 	}
 }
