@@ -43,9 +43,10 @@ public class WebViewer extends VViewer {
 		
 		
 		
-		new StrategyPlayer(game, "StrategyPlayer One");
-		new TTRPlayer(game, "TopTwoReacherPlayer Two");
-//		new TopTwoReacherPlayer(game, "TopTwoReacher Three");
+		
+		//new TTRPlayer(game, "TopTwoReacher One");
+		new HumanWebPlayer(this, game, "HumanPlayer One");
+		new StrategyPlayer(game, "StrategyPlayer Two");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Four");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Five");
 //		new TopTwoReacherPlayer(game, "TopTwoReacher Six");

@@ -9,7 +9,9 @@ public enum Strategies {
 	OPTIMUM_ZONE(null, new int[][] { { 4, 0 }, { 2, 0 }, { 1, 0 }, { 3, 0 } }, 1),
 	FIVE_CROSS(null, new int[][] { { 0, 2 }, { 2, 0 }, { 2, 2 }, { 1, 1 }, { -1, -1 }, { 3, 3 } }, 2),
 	DOUBLE_ALIGN_ONE(null, new int[][] { { -2, -1 }, { 0, -2 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 0, 2 } }, 3),
-	DOUBLE_ALIGN_TWO(null, new int[][] { { -2, -1 }, { 0, -2 }, { -1, 0 }, { 0, 1 }, { -3, -2 }, { 1, 2 } }, 3);
+	DOUBLE_ALIGN_TWO(null, new int[][] { { -2, -1 }, { 0, -2 }, { -1, 0 }, { 0, 1 }, { -3, -2 }, { 1, 2 } }, 3),
+	CROSS(null, new int[][] { {-1, 1}, {0, 2}, {1, 1}, {0, 1}, {2, 0}, {-1, 0}, {-2, 2}, {1, 3}}, 4),
+	SWAP(new int[][] {{-2, 0}, {-1, 0}}, new int[][] {{-1, 1}, {-1, -1}}, 1);
 
 	private int[][] ennemie, strategy;
 	private int prioritie;

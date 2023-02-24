@@ -19,9 +19,9 @@ import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
 public class ConsoleViewer extends VViewer {
 
 	//Constants
-	private static final int DEFAULT_WIDTH = 10;
-	private static final int DEFAULT_HEIGHT = 10;
-	private static final int DEFAULT_DEPTH = 10;
+	private static final int DEFAULT_WIDTH = 20;
+	private static final int DEFAULT_HEIGHT = 20;
+	private static final int DEFAULT_DEPTH = 1;
 	
 	private static final int NB_OF_GAMES = 10000;
 	
@@ -127,9 +127,8 @@ public class ConsoleViewer extends VViewer {
 	
 	//Init players for each game
 	public void initPlayers(Game game) {
-
+		new TTRPlayer(game, "TopTwoReacher One");
 		new StrategyPlayer(game, "StrategyPlayer Two");
-		new TTRPlayer(game, "TTRPlayer One");
 	}
 
 	@Override
