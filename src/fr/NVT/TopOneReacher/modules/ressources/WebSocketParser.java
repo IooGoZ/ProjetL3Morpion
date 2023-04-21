@@ -65,20 +65,25 @@ public class WebSocketParser {
 		String[] msgs = msg.split(SPLIT_CHAR);
 	    // On verifie si le message a la bonne taille
 	    int length = msgs.length;
-	    if (length != 3)
+	    if (length >= 5)
 	    {
-	    	System.out.println("ERROR in parserCreateNewGame : msgs.length is not equal to 3, it is egal to " + length);
-	        return;
-	    }
-	    else
-	    {
-	        // On recupere les valeurs
+	    	// On recupere les valeurs
 	        int width = Integer.parseInt(msgs[0]);
 	        int height = Integer.parseInt(msgs[1]);
 	        int depth = Integer.parseInt(msgs[2]);
 	        
+	        int[] playerList = new int[length-3];
+	        for (int i = 3; i < length; i++) {
+	        	playerList[i-3] = Integer.parseInt(msgs[i]);
+	        }
+	        
 	        // On appelle la fonction avec les valeurs recuperes
-	        wViewer.createNewGame(width, height, depth);
+	        wViewer.createNewGame(width, height, depth, playerList);
+	    }
+	    else
+	    {
+	    	System.out.println("ERROR in parserCreateNewGame : msgs.length is not valid, it is egal to " + length);
+	        return;
 	    }
 	}
 	

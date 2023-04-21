@@ -146,7 +146,19 @@ public class StrategyPlayer extends VPlayer{
 		return new Position(pos.getX()-pt[0], pos.getY()-pt[1], pos.getZ()-pt[2]);
 	}
 
-	private int evaluateStrategy(int [][] ennemie, int[][] strategy, Position pos) {
+	private int evaluateDefenseStrategy(int [][] ennemie, Position pos) {
+		int res = 0;
+		for (int[] pt : ennemie) {
+			Position tmp_pos = convertRelativePos(pos, pt);
+			int bd = board.getPawnAtPosition(tmp_pos);
+			if (bd != Board.PAWN_NONE && bd != super.getId() && bd != Board.DEFAULT_OUT_PAWN)
+				res++;
+			else return -1;
+		}
+		return res * 100 / ennemie.length;
+	}
+	
+	private int evaluateStrategy(int[][] strategy, Position pos) {
 		int res = 0;
 		for (int[] pt : strategy) {
 			Position tmp_pos = convertRelativePos(pos, pt);
@@ -155,14 +167,6 @@ public class StrategyPlayer extends VPlayer{
 				res++;
 			else if (bd != Board.PAWN_NONE)
 				return -1;
-		}
-		if (ennemie != null) {
-			for (int[] pt : ennemie) {
-				Position tmp_pos = convertRelativePos(pos, pt);
-				int bd = board.getPawnAtPosition(tmp_pos);
-				if (bd == Board.PAWN_NONE || bd == super.getId() || bd == Board.DEFAULT_OUT_PAWN)
-					return -1;
-			}
 		}	
 		return res * 100 / strategy.length;
 	}
@@ -177,17 +181,40 @@ public class StrategyPlayer extends VPlayer{
 			Position[] positions = board.getLastPositions(i);
 			if (positions == null)
 				break;
-			Position pos = positions[super.getId()-1];
-			if (pos == null)
-				continue;
-			for (Integer id : priorities.keySet()) {
-				int note = evaluateStrategy(ennemies.get(id), strategies.get(id), pos);
-				if (note != -1) {
-					saving.put(id, note);
-					savingPos.put(id, pos);
-					break;
+			
+			for (int pid = 0 ; pid < positions.length; pid++) {
+				Position pos = positions[pid];
+				if (pos == null)
+					continue;
+				if (pid == super.getId()-1) {
+					for (Integer id : priorities.keySet()) {
+						int [][] ennemie = ennemies.get(id);
+						if (ennemie == null) {
+							int note = evaluateStrategy(strategies.get(id), pos);
+							if (note != -1) {
+								saving.put(id, note);
+								savingPos.put(id, pos);
+								break;
+							}
+						}
+					}
+				} else {
+					for (Integer id : priorities.keySet()) {
+						int [][] ennemie = ennemies.get(id);
+						if (ennemie != null) {
+							int note = evaluateDefenseStrategy(ennemies.get(id), pos);
+							if (note != -1) {
+								saving.put(id, note);
+								savingPos.put(id, pos);
+								break;
+							}
+						}
+					}
 				}
+				
 			}
+			
+			
 		}
 		
 		if (saving.size() > 0) {

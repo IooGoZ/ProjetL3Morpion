@@ -1,7 +1,6 @@
 package fr.NVT.TopOneReacher.kernel;
 
 import fr.NVT.TopOneReacher.modules.viewers.WebViewer;
-
 public class Main {
 
 	public static void main(String[] args) {

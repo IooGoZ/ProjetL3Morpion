@@ -13,17 +13,18 @@ import fr.NVT.TopOneReacher.kernel.utils.GameState;
 import fr.NVT.TopOneReacher.kernel.utils.Position;
 import fr.NVT.TopOneReacher.modules.players.StrategyPlayer;
 import fr.NVT.TopOneReacher.modules.players.TTRPlayer;
+import fr.NVT.TopOneReacher.modules.players.TreePlayer;
 
 
 	//ConsoleViewer is basic display system to run tests
 public class ConsoleViewer extends VViewer {
 
 	//Constants
-	private static final int DEFAULT_WIDTH = 20;
-	private static final int DEFAULT_HEIGHT = 20;
+	private static final int DEFAULT_WIDTH = 100;
+	private static final int DEFAULT_HEIGHT = 100;
 	private static final int DEFAULT_DEPTH = 1;
 	
-	private static final int NB_OF_GAMES = 10000;
+	private static final int NB_OF_GAMES = 100;
 	
 	private static final String OUT_FILE_NAME = "morpion_out.txt";
 	
@@ -127,8 +128,8 @@ public class ConsoleViewer extends VViewer {
 	
 	//Init players for each game
 	public void initPlayers(Game game) {
+		new StrategyPlayer(game, "Strategy Player");
 		new TTRPlayer(game, "TopTwoReacher One");
-		new StrategyPlayer(game, "StrategyPlayer Two");
 	}
 
 	@Override
